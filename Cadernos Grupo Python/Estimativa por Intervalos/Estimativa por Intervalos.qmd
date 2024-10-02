@@ -1,0 +1,510 @@
+---
+title:  "Estimativa por Intervalos"
+format:
+  html:
+    code-fold: false
+toc: true
+toc-title: Navegação
+number-sections: true
+jupyter: python3
+header-includes: 
+  \usepackage{lipsum}
+  \usepackage{tcolorbox}
+---
+
+![](inicio.jpg)
+
+# Biblioteca statsmodels
+
+A biblioteca **statsmodels** é um módulo Python que fornece classes e funções para a estimativa de muitos modelos estatísticos diferentes, bem como para a realização de testes estatísticos e a exploração de dados.
+
+## Importação
+
+```{python}
+import statsmodels.api as sm
+import scipy.stats as ss
+import pandas as pd
+import numpy as np
+```
+
+# Intervalos de Confiança
+
+O objetivo central da Inferência Estatística é obter informações para uma população a partir do conhecimento de uma única amostra. Em geral, a população é representada por uma variável aleatória X, com função de distribuição ou densidade de probabilidade $f_{x}$ que depende de um parâmetro θ desconhecido. Se $X_{1}, X_{2}, \ldots, X_{n}$ é uma amostra aleatória dessa população, então as estatísticas $\hatθ_{1}$ e $\hatθ_{2}$ formam um intervalo de $100 × (1 − α) %$ confiança para θ, se:
+
+$P(\hatθ_{1} ≤ θ ≤ \hatθ_{2}) ≥ 1 − α$
+
+Na prática, temos apenas uma amostra e, assim, é importante que se dê alguma informação sobre essa possível variabilidade do estimador. Ou seja, é importante informar o valor do estimador $\hatθ$ obtido com uma amostra específica, mas é importante informar também que o verdadeiro valor do parâmetro θ poderia estar em um determinado intervalo, digamos, no intervalo $[\hatθ − \varepsilon , \hatθ + \varepsilon ]$. Dessa forma, informamos a nossa margem de erro no processo de estimação, com essa margem sendo a consequência do processo de seleção aleatória da amostra.
+
+Nesse material será apresentado como obter esse intervalo, de modo a “acertar na maioria das vezes”, isto é, mostraremos um procedimento que garanta que, na maioria das vezes (ou das amostras possíveis), o intervalo obtido conterá o verdadeiro valor do parâmetro. Em outras palavras, com alta probabilidade (em geral, indicada por 1−α), o intervalo $[\hat{θ}−ε,\hat{θ}+ε]$ conterá o verdadeiro valor do parâmetro θ.
+
+Com probabilidade alta (em geral, indicada por $1 − α$ ), o intervalo $[\hat{θ} − \varepsilon ; \hat{θ} + \varepsilon ]$ conterá o verdadeiro valor do parâmetro θ, ou seja, o procedimento de construção garante uma alta probabilidade (1−α) de se obter um intervalo que contenha o verdadeiro valor do parâmetro.
+
+$1 − α$ é chamado nível de confiança, enquanto o valor α é conhecido como nível de significância. O intervalo $[\hat{θ} − \varepsilon ; \hat{θ} + \varepsilon ]$ é chamado de intervalo de confiança de nível $1 − α$.
+
+OBS: Mesmo representado através de uma probabilidade, não podemos interpretar o intervalo de confiança da forma: “A probabilidade de θ pertencer ao intervalo  $[\hat{θ}{1}$ , $\hat{θ}{2}]$ é maior ou igual a 1-α.”, pois θ **não é variável aleatória**.
+
+**Exemplo**: Em um estudo sobre o Índice de Massa Corporal (IMC), foi reportado o seguinte intervalo de confiança de 95% para o IMC médio µ da população da cidade de Niterói - RJ, com base em uma amostra de 650 pessoas: $[26, 8 − 0, 6; 26, 8 + 0, 6]$ . Dessa forma podemos afirmar que com 95% de confiança esse intervalo contém o verdadeiro valor do IMC médio da população residente de Niterói - RJ.
+
+# Intervalos de Confiança para a Média
+
+Seja $X_{1}, X_{2}, \ldots, X_{n}$ uma amostra aleatória proveniente de uma população $X \sim N(µ,σ²)$ com variância desconhecida, temos que:
+
+$X \sim N(µ; σ^{2})⇒ \bar{X} ∼ N(µ;\frac{\sigma^{2}}{n}) ⇒  T = \frac{\bar{X}-\mu }{\frac{S}{\sqrt{n}}} ∼ t_{n−1}$
+
+Logo,
+
+Ou seja, o intervalo de confiança para µ de nível de confiança 1 − α é:
+
+$\left [ \bar{X}-t_{n-1;\alpha /2}\cdot \frac{S}{\sqrt{n}};\bar{X}+t_{n-1;\alpha /2}\cdot \frac{S}{\sqrt{n}} \right ]$
+
+onde $t_{n−1, α/2}$ é o valor crítico da distribuição t-Student com n−1 graus de liberdade que deixa área $\frac{α}{2}$ acima dele.
+
+Para realizar a construção de um intervalo de confiança para a média, devemos utilizar a função `t.interval()` da biblioteca **scipy.stats**, cujos argumentos de entrada são:
+
+* `alpha`: nível de confiança, ou seja, 1-α. (Sim, alpha = 1 - $\alpha$)
+* `df`: tamanho dos graus de liberdade, ou seja, n-1.
+* `loc`: $\bar{x}$, ou seja, a média dos dados da amostra.
+* `scale`: $\frac{S}{\sqrt{n}}$.
+
+Para demonstrar aplicações dessa função utilizaremos o banco de dados a seguir, que representa uma amostra aleatória simples de clientes de um banco alemão.
+
+```python
+df = pd.read_csv('german_credit_risk_target.csv')
+df.head()
+```
+
+```{=html}
+<div class="scroll_table">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>Age</th>
+      <th>Sex</th>
+      <th>Job</th>
+      <th>Housing</th>
+      <th>Saving accounts</th>
+      <th>Checking account</th>
+      <th>Credit amount</th>
+      <th>Duration</th>
+      <th>Purpose</th>
+      <th>Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>22</td>
+      <td>female</td>
+      <td>2</td>
+      <td>own</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>5951</td>
+      <td>48</td>
+      <td>radio/TV</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>10</td>
+      <td>25</td>
+      <td>female</td>
+      <td>2</td>
+      <td>rent</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>1295</td>
+      <td>12</td>
+      <td>car</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>11</td>
+      <td>24</td>
+      <td>female</td>
+      <td>2</td>
+      <td>rent</td>
+      <td>little</td>
+      <td>little</td>
+      <td>4308</td>
+      <td>48</td>
+      <td>business</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>12</td>
+      <td>22</td>
+      <td>female</td>
+      <td>2</td>
+      <td>own</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>1567</td>
+      <td>12</td>
+      <td>radio/TV</td>
+      <td>good</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>14</td>
+      <td>28</td>
+      <td>female</td>
+      <td>2</td>
+      <td>rent</td>
+      <td>little</td>
+      <td>little</td>
+      <td>1403</td>
+      <td>15</td>
+      <td>car</td>
+      <td>good</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+**Exemplo 1**: Supondo que a idade das mulheres segue uma distribuição normal, vamos estimar a idade média das mulheres dessa população através da amostra de 310 mulheres contida nesse banco de dados. Para isso calcularemos um intervalo de 95% de confiança.
+
+```python
+df2 = df[df['Sex'] == "female"] # Filtrar apenas os dados das mulheres
+df2.head()
+```
+
+```{=html}
+<div class="scroll_table">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>Age</th>
+      <th>Sex</th>
+      <th>Job</th>
+      <th>Housing</th>
+      <th>Saving accounts</th>
+      <th>Checking account</th>
+      <th>Credit amount</th>
+      <th>Duration</th>
+      <th>Purpose</th>
+      <th>Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>22</td>
+      <td>female</td>
+      <td>2</td>
+      <td>own</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>5951</td>
+      <td>48</td>
+      <td>radio/TV</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>10</td>
+      <td>25</td>
+      <td>female</td>
+      <td>2</td>
+      <td>rent</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>1295</td>
+      <td>12</td>
+      <td>car</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>11</td>
+      <td>24</td>
+      <td>female</td>
+      <td>2</td>
+      <td>rent</td>
+      <td>little</td>
+      <td>little</td>
+      <td>4308</td>
+      <td>48</td>
+      <td>business</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>12</td>
+      <td>22</td>
+      <td>female</td>
+      <td>2</td>
+      <td>own</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>1567</td>
+      <td>12</td>
+      <td>radio/TV</td>
+      <td>good</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>14</td>
+      <td>28</td>
+      <td>female</td>
+      <td>2</td>
+      <td>rent</td>
+      <td>little</td>
+      <td>little</td>
+      <td>1403</td>
+      <td>15</td>
+      <td>car</td>
+      <td>good</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ss.t.interval(alpha = 0.95, df = len(df2['Age'])-1, loc = np.mean(df2['Age']), scale = ss.sem(df2['Age']))
+```
+
+::: {.callout}
+  (31.48960295935143, 34.1168486535518)
+:::
+
+Logo, podemos concluir que com 95% de confiança o intervalo $[31.4896;34.1169]$ contém o verdadeiro valor da idade média das mulheres dessa população.
+
+**Exemplo 2**: Supondo que a idade das pessoas pertencentes a empresa 3 segue uma distribuição normal, vamos estimar a idade média dessa população através da amostra de 148 pessoas presentes no banco de dados. Para isso calcularemos um intervalo de 99% de confiança.
+
+```python
+df3 = df[df['Job'] == 3] # Filtrar apenas os dados das pessoas que trabalham na empresa 3
+df3.head()
+```
+
+```{=html}
+<div class="scroll_table">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>Age</th>
+      <th>Sex</th>
+      <th>Job</th>
+      <th>Housing</th>
+      <th>Saving accounts</th>
+      <th>Checking account</th>
+      <th>Credit amount</th>
+      <th>Duration</th>
+      <th>Purpose</th>
+      <th>Risk</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>7</th>
+      <td>7</td>
+      <td>35</td>
+      <td>male</td>
+      <td>3</td>
+      <td>rent</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>6948</td>
+      <td>36</td>
+      <td>car</td>
+      <td>good</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>9</td>
+      <td>28</td>
+      <td>male</td>
+      <td>3</td>
+      <td>own</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>5234</td>
+      <td>30</td>
+      <td>car</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>18</td>
+      <td>44</td>
+      <td>female</td>
+      <td>3</td>
+      <td>free</td>
+      <td>little</td>
+      <td>moderate</td>
+      <td>12579</td>
+      <td>24</td>
+      <td>car</td>
+      <td>bad</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>34</td>
+      <td>33</td>
+      <td>female</td>
+      <td>3</td>
+      <td>own</td>
+      <td>little</td>
+      <td>rich</td>
+      <td>1474</td>
+      <td>12</td>
+      <td>furniture/equipment</td>
+      <td>good</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>40</td>
+      <td>30</td>
+      <td>male</td>
+      <td>3</td>
+      <td>own</td>
+      <td>quite rich</td>
+      <td>NaN</td>
+      <td>2333</td>
+      <td>30</td>
+      <td>radio/TV</td>
+      <td>good</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ss.t.interval(alpha = 0.99, df = len(df3['Age'])-1, loc = np.mean(df3['Age']), scale = ss.sem(df3['Age']))
+```
+
+:::{.callout}
+  (36.463454992835125, 41.590599061218924)
+:::
+
+Portanto, podemos concluir que com 99% de confiança o intervalo $[36.4635;41.5906]$ contém o verdadeiro valor da idade média dos trabalhadores da empresa 3.
+
+# Intervalos de Confiança para a proporção populacional
+
+Seja ${X_{1}, X_{2}, …, X_{n}}$ uma amostra aleatórial proveniente de uma população ${X \sim  Ber(p)}$, logo ${\hat{p} \sim  N(p, p(1-p))}$, ${\hat{p}}$ estimador de p, então:
+
+$\frac{\hat{p} - p}{\sqrt{\frac{p(1-p)}{n}}} \sim N(0, 1)$
+
+Logo,
+
+Como não sabemos o parâmetro populacional p, temos duas opções para substitui-lo no Intervalo de Confiança:
+
+* ${\hat{p}}$ no lugar do p;
+
+* maximizar o valor de p(1 - p) => p = 0,5 (conhecido como IC conservador)
+
+Para realizar a construção de um intervalo de confiança para a proporção, utilizaremos a função proportion_confint() da biblioteca statsmodels.stats, cujos argumentos de entrada são:
+
+* `count`: a quantidade de ocorrências.
+* `nobs`: o tamanho da amostra.
+* `alpha`: nível de significância.
+
+**Exemplo 3**: Utilizando a mesma base do exemplo anterior, vamos construir um intervalo de confiança para a proporção de pessoas com `Risk` classificado como `good`.
+
+```python
+df['Risk'] = df['Risk'].map({'good' : 1, 'bad' : 0}) # transformando a variável Risk para valores numéricos
+```
+
+```python
+sm.stats.proportion_confint(count = sum(df['Risk']), nobs = len(df['Risk']), alpha = 0.05)
+```
+
+::: {.callout}
+(0.6715974234910674, 0.7284025765089325)
+:::
+
+Desse modo, temos que com 95% de confiança o intervalo ${[0,6716; 0,7284]}$ contém o verdadeiro valor da proporção de clientes avaliados como `good`.
+
+# Intervalo de Confiança para a variância populacional
+
+Seja ${X_{1}, X_{2}, …, X_{n}}$ uma amostra aleatória proveniente de uma população ${X \sim N(µ, σ²)}$, então
+
+$\frac{(n - 1)S^{2}}{\sigma ^{2}} \sim X^{2}_{n-1}$
+
+Logo,
+
+Nem o `statmodels` e nem o `scipy` possuem funções que geram intervalo de confiança para a variância. Então, vamos construir a nossa!
+
+```python
+def variancia_int(amostra, alfa):
+    
+    n = len(amostra)                
+    s_2 = np.var(amostra, ddof=1)   
+    gl = n - 1  
+    
+    limite_inferior = (n - 1) * s_2 / ss.chi2.ppf(1 - alfa / 2, gl)
+    limite_superior = (n - 1) * s_2 / ss.chi2.ppf(alfa / 2, gl)
+    
+    print('(%.16f, %.16f)' % (limite_inferior, limite_superior))
+```
+
+**Exemplo 4**: Agora, vamos construir um intervalo de confiança para a variância da idade dos homens utilizando os dados da amostra.
+
+```python
+df_homens = df[df['Sex'] == "male"]
+```
+
+```python
+variancia_int(df_homens['Age'], 0.05)
+```
+
+::: {.callout}
+  (108.9517847841306661, 134.5924067459885407)
+:::
+
+Assim, podemos concluir que com 95% de confiança o intervalo ${[108,9518; 134,5924]}$ contém o verdadeiro valor da variância dos homens dessa população alvo.
+
+# Referências
+
+FARIAS, A. M. L. Apostila de Estatística II. Departamento de Estatística. 2017. Universidade Federal Fluminense. Velarde, L. G. C. CAVALIERE, Y. F. Apostila Inferência Estatística. Departamento de Estatística. Universidade Federal Fluminense
