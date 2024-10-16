@@ -1,0 +1,2701 @@
+---
+title:  "Teste de Hipóteses - Parte 1"
+format:
+  html:
+    code-fold: false
+toc: true
+toc-title: Navegação
+number-sections: false
+jupyter: python3
+---
+
+![](Cadernos%20Grupo%20Python/Teste%20de%20Hip%C3%B3teses%20-%20Parte%201/inicio.jpg)
+
+Na teoria de estimação, vimos que é possível, por meio de estatísticas amostrais adequadas, estimar parâmetros de uma população, dentro de um certo intervalo de confiança. Nos testes de hipóteses, em vez de se construir um intervalo de confiança no qual se espera que o parâmetro da população esteja contido, testa-se a validade de uma afirmação sobre um parâmetro da população. Então, em um teste de hipótese, procura-se tomar decisões a respeito de uma população com base em informações obtidas de uma amostra dessa população.
+
+O contexto em que se baseia a teoria de teste de hipótese é basicamente o mesmo da teoria de estimação por intervalo de confiança. Temos uma população representada por uma variável aleatória X cuja distribuição de probabilidade depende de algum parâmetro θ. O interesse agora está em testar a veracidade de alguma afirmativa sobre θ.
+
+# Importação
+
+```python
+import statsmodels.stats as sm
+from statsmodels.stats.weightstats import ztest
+import scipy.stats as ss
+import pandas as pd
+import numpy as np
+import warnings
+from statsmodels.stats.weightstats import ttest_ind
+warnings.filterwarnings('ignore')
+```
+
+# Hipóteses Nula e Alternativa
+
+A hipótese nula, representada por $H_{0}$, é a hipótese básica que queremos testar. Consideraremos apenas hipóteses nulas simples, isto é, hipóteses que estabelecem que o parâmetro de interesse é igual a um determinado valor. A forma geral é:
+
+$H_{0} : θ = θ_{0}$ onde $\theta_0 \in \mathbb{R}$.
+
+Alguns exemplos são:
+
+$H_{0} : µ = 6\space\space\space\space\ H_{0} : p = 0,5\space\space\space\space\space\ H_{0} : σ² = 25$
+
+O procedimento de teste de hipótese resultará em uma regra de decisão que nos permitirá rejeitar ou não rejeitar $H_{0}$. A hipótese alternativa, representada por $H_{1}$, é a hipótese que devemos considerar no caso de rejeição da hipótese nula. A forma mais geral de $H_{1}$ é a hipótese bilateral.
+
+$H_{1} : θ \neq  θ_{0}$
+
+Em algumas situações, podemos ter informação que nos permita restringir o domínio da hipótese alternativa.Temos, então, hipóteses unilaterais à esquerda
+
+$H_{1} : θ < θ_{0}$
+
+e hipóteses unilaterais à direita:
+
+$H_{1} : θ > θ_{0}$
+
+A escolha entre essas formas de hipótese alternativa se faz com base no conhecimento sobre o problema sendo considerado e deve ser feita antes de se ter o resultado da amostra.
+
+## Exemplos
+
+**Exemplo 1**: Uma revista X afirmou que o tempo de produção de parafusos de uma máquina da empresa Y é em `média de 2 horas`. Deseja-se saber se essa afirmação é verdadeira.
+
+Hipótese Nula: $H_{0} : \mu = 2$
+
+Hipótese Alternativa: $H_{1} : \mu\neq  2$
+
+**Exemplo 2**: Uma empresa afirma que seus funcionários da área de TI possuem idade média `maior que 40 anos`. Desaja-se saber se essa afirmação é verdadeira.
+
+Hipótese Nula: $H_{0} : \mu = 40$
+
+Hipótese Alternativa: $H_{1} : \mu > 40$
+
+OBS: Vale citar que, são mais utilizadas as hipóteses nulas apenas representadas por igualdades. Porém como forma de interpretação, essa hipótese é associada ao inverso da hipótese alternativa. Tendo como exemplo caso anterior, temos a hipótese nula $H_{0} : \mu = 40$ que pode ser entendida também como $H_{0} : \mu \leq 40$. Pois ao ser realizado um teste para verificar a veracidade da informação, busca-se evidências que a idade média é maior que 40. Caso não há evidências a favor, tem-se que a idade média pode ser menor ou igual a 40.
+
+# Estatística de Teste e Regra de Decisão
+
+Assim como na construção dos intervalos de confiança, usaremos uma estatística amostral apropriada para construir o nosso teste de hipótese, e, nesse contexto, essa estatística é chamada estatística de teste. As estatísticas de teste naturalmente dependem do parâmetro envolvido no teste e nesse caso consideraremos os parâmetros média, variância e proporção. O procedimento de decisão será definido em termos da hipótese nula $H_{0}$, com duas decisões possíveis: (i) rejeitar $H_{0}$ ou (ii) não rejeitar $H_{0}$. No quadro a seguir, resumimos as situações possíveis.
+
+![](Cadernos%20Grupo%20Python/Teste%20de%20Hip%C3%B3teses%20-%20Parte%201/tabela_decisao.png)
+
+Vemos, aí, que existem duas possibilidades de erro:
+
+* Erro tipo I: rejeitar $H_{0}$ quando $H_{0}$ é verdadeira.
+* Erro tipo II: não rejeitar $H_{0}$ quando $H_{0}$ é falsa.
+
+# Nível de Significância
+Definimos como nível de significância de um teste (geralmente denotado pela letra grega α) a probabilidade do erro tipo 1, ou seja,
+
+$α \text{ = P(erro I) = P(rejeitar } H_0  | H_0 \text{ é verdadeiro).}$
+
+Em geral é escolhido um dos seguintes valores para α: 1%, 5% e 10%.
+
+# P - Valor
+
+**O valor P (p-valor) é a probabilidade de se obter um valor da estatística de teste tão ou mais extremo que o valor observado, supondo-se H0 verdadeira.**
+
+A partir da definição, podemos definir a regra de decisão do teste através do resultado do p-valor.
+
+* Se p-valor > $\alpha$, não rejeitamos $H_{0}$ 
+* Se p-valor ≤ $\alpha$, rejeitamos $H_{0}$, ou seja, há evidências a favor de $H_{1}$.
+
+![](Cadernos%20Grupo%20Python/Teste%20de%20Hip%C3%B3teses%20-%20Parte%201/valorp.png)
+
+Graças a diversidade de testes disponíveis, esses testes estatísticos podem ser classificados em dois grupos distintos:
+
+* **Testes Paramétricos**: testes realizados partindo do pressuposto que a população segue uma distribuição normal.
+
+* **Testes Não Paramétricos**: testes que não precisam partir do pressuposto da normalidade.
+
+A seguir serão apresentados alguns testes estatísticos **paramétricos** para 1 e 2 populações independentes.
+
+# Inferência sobre Uma População
+
+## Teste de Hipótese para a Média Populacional
+Seja $X1, . . . , Xn$ uma amostra aleatória de uma população normal com média μ e variância σ² desconhecidas. E suponha que queremos testar as seguintes hipóteses:
+
+$H_{0} : \mu = \mu_{0}$
+
+vs
+
+$H_{1} : \mu < ou > ou \neq \mu_{0}$,
+
+onde $\mu_{0}$ ∈ $\mathbb{R}$.
+
+Seja T a estatística do teste definida por:
+
+T = $\frac{\bar{X}-\mu}{\frac{S}{\sqrt{n}}} \sim t_{n-1}$
+ 
+ 
+
+onde $\bar{X}$ e $S$ são a média amostral e a variância amostral, respectivamente.
+
+Após a definição das hipóteses e da estatística de teste, temos que o p-valor é calculado por:
+
+* Se $H_{1}: \mu \neq \mu_{0}$:
+$p-valor = P (T > T_{obs}\mid H_{0})$
+
+* Se $H_{1}: \mu  > \mu_{0}$
+$p-valor = P (T > T_{obs}\mid H_{0})$
+
+* $H_{1}: \mu  < \mu_{0}$
+$p-valor = P (T < T_{obs}\mid H_{0})$
+
+onde
+
+$T_{obs} = \frac{\bar{X}-\mu_{0}}{\frac{S}{\sqrt{n}}}$
+
+Para se aplicar o teste de média para uma população com variância desconhecida, utilizamos a função `ttest_1samp` da biblioteca **scipy**, cujo argumentos de entrada obrigatórios são:
+
+* `a` : a amostra observada.
+* `popmean` : valor associado a $\mu_{0}$ nas hipóteses.
+
+**Nota-se que essa função não possui nenhum argumento de entrada que indique o tipo da hipótese alternativa (unilateral ou bilateral) que será utilizada. Logo, tem-se que essa função retorna apenas o valor do $T_{obs}$ e o p-valor do teste bilateral. Dessa forma, só podem ser aplicados testes cuja hipótese nula seja** $\mu \neq \mu_{0}$.
+
+Como na biblioteca **statsmodels** não há função para a utilização das hipóteses unilaterais, iremos também criar a função `ttest_uni` que retorna o valor de $T_{obs}$ e o p-valor, e possui como argumentos de entrada:
+
+* `amostra`: amostra observada.
+* `popmean`: valor associado a $\mu_{0}$ nas hipóteses.
+* `alternative`: tipo da hipótese alternativa desejada: “larger” (unilateral à direita) ou “smaller” (unilateral à esquerda).
+
+```python
+def ttest_uni(amostra, popmean, alternative):
+    n= len(amostra)
+    tobs = (np.mean(amostra)-popmean)/np.sqrt(np.var(amostra, ddof=1)/n)
+    if(alternative == "smaller"):
+        pvalor = ss.t.cdf(tobs,n-1)
+    if(alternative == "larger"):
+        pvalor = 1 - ss.t.cdf(tobs,n-1)
+    
+    print('(%.16f,%.16f)' % (tobs,pvalor))
+```
+
+Agora vamos aplicar alguns exemplos práticos de forma a demonstrar a facilidade da aplicabilidade das funções e dos conceitos estatísticos já apresentados.
+
+Para isso será utilizado um banco de dados que representa uma amostra aleatória simples de 1470 funcionários da empresa IBM.
+
+```python
+base=pd.read_csv('R-Employee-Attrition.csv')
+base.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>41</td>
+      <td>Yes</td>
+      <td>Travel_Rarely</td>
+      <td>1102</td>
+      <td>Sales</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>1</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>0</td>
+      <td>1</td>
+      <td>6</td>
+      <td>4</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>49</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>279</td>
+      <td>Research &amp; Development</td>
+      <td>8</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>10</td>
+      <td>3</td>
+      <td>3</td>
+      <td>10</td>
+      <td>7</td>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>37</td>
+      <td>Yes</td>
+      <td>Travel_Rarely</td>
+      <td>1373</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Other</td>
+      <td>1</td>
+      <td>4</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>7</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>33</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>1392</td>
+      <td>Research &amp; Development</td>
+      <td>3</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>5</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>3</td>
+      <td>3</td>
+      <td>8</td>
+      <td>7</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>27</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>591</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>1</td>
+      <td>Medical</td>
+      <td>1</td>
+      <td>7</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>6</td>
+      <td>3</td>
+      <td>3</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+### Exemplo 1:
+
+Dado que a idade dos funcionários da empresa IBM que raramente viajam a trabalho segue uma distribuição normal com média e variância desconhecidas. Deseja-se testar se a média das idades dos funcionários que **raramente viajam a trabalho** pode ser considerada ou não `igual a 37 anos`, utilizando um nível de significância de `5%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : \mu = 37$
+
+vs
+
+$H_{1} : \mu\neq 37$
+
+```python
+base_rarely= base[base['BusinessTravel'] == "Travel_Rarely"] # Filtrar apenas os dados dos que raramente viajam a trabalho.
+base_rarely.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>41</td>
+      <td>Yes</td>
+      <td>Travel_Rarely</td>
+      <td>1102</td>
+      <td>Sales</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>1</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>0</td>
+      <td>1</td>
+      <td>6</td>
+      <td>4</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>37</td>
+      <td>Yes</td>
+      <td>Travel_Rarely</td>
+      <td>1373</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Other</td>
+      <td>1</td>
+      <td>4</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>7</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>27</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>591</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>1</td>
+      <td>Medical</td>
+      <td>1</td>
+      <td>7</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>6</td>
+      <td>3</td>
+      <td>3</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>59</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>1324</td>
+      <td>Research &amp; Development</td>
+      <td>3</td>
+      <td>3</td>
+      <td>Medical</td>
+      <td>1</td>
+      <td>10</td>
+      <td>...</td>
+      <td>1</td>
+      <td>80</td>
+      <td>3</td>
+      <td>12</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>30</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>1358</td>
+      <td>Research &amp; Development</td>
+      <td>24</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>11</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ss.ttest_1samp(base_rarely['Age'],popmean = 37)
+Ttest_1sampResult(statistic=0.3183482529054914, pvalue=0.7502845793964478)
+```
+
+Como p-valor = 0.75 é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, há evidências que a média das idades dos funcionários que raramente viajam a trabalho é igual a 37 anos.
+
+### Exemplo 2
+Dado que a idade dos funcionários da empresa IBM que frequentemente viajam a trabalho segue uma distribuição normal com média e variância desconhecidas. Deseja-se testar se a média das idades dos funcionários que **frequentemente viajam a trabalho** pode ser considerada `menor que 39 anos`, utilizando um nível de significância de `1%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : \mu = 39$
+
+vs
+
+$H_{1} : \mu < 39$
+
+```python
+base_freq= base[base['BusinessTravel'] == "Travel_Frequently"] # Filtrar apenas os dados dos que frequentemente viajam a trabalho.
+base_freq.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>49</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>279</td>
+      <td>Research &amp; Development</td>
+      <td>8</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>10</td>
+      <td>3</td>
+      <td>3</td>
+      <td>10</td>
+      <td>7</td>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>33</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>1392</td>
+      <td>Research &amp; Development</td>
+      <td>3</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>5</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>3</td>
+      <td>3</td>
+      <td>8</td>
+      <td>7</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>32</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>1005</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>8</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>2</td>
+      <td>2</td>
+      <td>7</td>
+      <td>7</td>
+      <td>3</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>38</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>216</td>
+      <td>Research &amp; Development</td>
+      <td>23</td>
+      <td>3</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>12</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>10</td>
+      <td>2</td>
+      <td>3</td>
+      <td>9</td>
+      <td>7</td>
+      <td>1</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>32</td>
+      <td>Yes</td>
+      <td>Travel_Frequently</td>
+      <td>1125</td>
+      <td>Research &amp; Development</td>
+      <td>16</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>33</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>10</td>
+      <td>5</td>
+      <td>3</td>
+      <td>10</td>
+      <td>2</td>
+      <td>6</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ttest_uni(amostra = base_freq['Age'], popmean = 39, alternative = "smaller")
+```
+
+::: {.callout}
+    (-4.9557346279446639,0.0000006294162639)
+:::
+
+
+Como p-valor = 0.0000006 é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja, há evidências que a média das idades dos funcionários que frequentemente viajam a trabalho é menor do que a 39 anos.
+
+### Exemplo 3
+Dado que a idade dos funcionários da empresa IBM do departamento de vendas segue uma distribuição normal com média e variância desconhecidas. Deseja-se testar se a média das idades dos funcionários do **departamento de vendas** pode ser considerada `maior do que 40 anos`, utilizando um nível de significância de `10%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : \mu = 40$
+
+vs
+
+$H_{1} : \mu> 40$
+
+```python
+base_sales= base[base['Department'] == "Sales"] # Filtrar apenas os dados dos funcinários do departamento de vendas.
+base_sales.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>41</td>
+      <td>Yes</td>
+      <td>Travel_Rarely</td>
+      <td>1102</td>
+      <td>Sales</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>1</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>0</td>
+      <td>1</td>
+      <td>6</td>
+      <td>4</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>53</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>1219</td>
+      <td>Sales</td>
+      <td>2</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>23</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>31</td>
+      <td>3</td>
+      <td>3</td>
+      <td>25</td>
+      <td>8</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>36</td>
+      <td>Yes</td>
+      <td>Travel_Rarely</td>
+      <td>1218</td>
+      <td>Sales</td>
+      <td>9</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>27</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>10</td>
+      <td>4</td>
+      <td>3</td>
+      <td>5</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>42</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>691</td>
+      <td>Sales</td>
+      <td>8</td>
+      <td>4</td>
+      <td>Marketing</td>
+      <td>1</td>
+      <td>35</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>10</td>
+      <td>2</td>
+      <td>3</td>
+      <td>9</td>
+      <td>7</td>
+      <td>4</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>46</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>705</td>
+      <td>Sales</td>
+      <td>2</td>
+      <td>4</td>
+      <td>Marketing</td>
+      <td>1</td>
+      <td>38</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>0</td>
+      <td>22</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ttest_uni(amostra = base_sales['Age'],popmean = 40, alternative = "larger")
+```
+
+::: {.callout}
+(-8.0835777128154724,0.9999999999999970)
+:::
+
+Como o p-valor é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, não há evidências que a idade média dos funcionários do departamento de vendas seja maior que 40 anos.
+
+## Teste de Hipóteses para a Proporção
+De posse de uma grande amostra aleatória simples $X1, X2,…,Xn$ extraída de uma população $X ∼ Ber(p)$, nosso interesse está em testar a hipótese nula
+
+$H_{0} : p = p_{0}$
+
+a um nível de significância α, onde $p_0 \in (0,1)$. E $p$ se trata da proporção de elementos de uma população que possuem determinada característica de interesse para o experimento. Dependendo do conhecimento sobre o problema, a hipótese alternativa pode tomar uma das três formas:
+
+$H_{1} : p <  ou  >  ou  \neq p_{0}$
+
+Em qualquer dos casos, a estatística de teste baseia-se na proporção amostral; para grandes amostras, sabemos que
+
+$Z = \frac{\hat{p}-p}{\sqrt{\frac{p\left ( 1-p \right )}{n}}} \sim N(0,1)$
+ 
+Após as definições das hipóteses e da estatística de teste, temos que o p-valor é calculado por:
+
+* Se $H_{1}: p \neq p_{0}$
+
+`p-valor = P(Z \geq \left	Z_{obs} \right	\mid H_{0})`
+
+* Se $H_{1}: p > p_{0}$
+$p-valor = P (Z > Z_{obs}\mid H_{0})$
+
+* Se $H_{1}: p < p_{0}$
+$p-valor = P (Z < Z_{obs}\mid H_{0})$
+
+onde
+
+$Z_{obs} = \frac{\hat{p}-p_{0}}{\sqrt{\frac{p_{0}\left ( 1 - p_{0} \right )}{n}}}$
+
+Para se aplicar o teste para proporção populacional, utilizamos a função `ztest` da biblioteca **statsmodels** que retorna o $Z_{obs}$ e o p-valor, e possui como argumentos de entrada obrigatórios:
+
+* `x1`: a amostra observada.
+* `value`: valor associado a $p_{0}$
+* `alternative`: tipo da hipótese alternativa desejada: “two-sided” (bilateral) , “larger” (unilateral à direita) ou “smaller” (unilateral à esquerda).
+
+Agora vamos aplicar alguns exemplos práticos de forma a demonstrar a aplicabilidade das funções e dos conceitos estatísticos já apresentados.
+
+Utilizaremos o banco de dados dos funcionários da empresa IBM já apresentado anteriormente.
+
+### Exemplo 1:
+
+Deseja-se averiguar se é corretar afirmar que `25%` dos funcionários do **departamento de vendas** do IBM passaram por algum problema na empresa, utilizando um nível de significância de `5%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : p = 0.25$
+
+vs
+
+$H_{1} : p\neq 0.25$
+
+Tem-se essa informação através da variável `Attrition` do banco de dados.
+
+```python
+base_sales['Attrition'] = base_sales['Attrition'].map({'Yes' : 1, 'No' : 0}) # transformando a variável Risk para valores numéricos
+base_sales.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>41</td>
+      <td>1</td>
+      <td>Travel_Rarely</td>
+      <td>1102</td>
+      <td>Sales</td>
+      <td>1</td>
+      <td>2</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>1</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>0</td>
+      <td>1</td>
+      <td>6</td>
+      <td>4</td>
+      <td>0</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>53</td>
+      <td>0</td>
+      <td>Travel_Rarely</td>
+      <td>1219</td>
+      <td>Sales</td>
+      <td>2</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>23</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>31</td>
+      <td>3</td>
+      <td>3</td>
+      <td>25</td>
+      <td>8</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>36</td>
+      <td>1</td>
+      <td>Travel_Rarely</td>
+      <td>1218</td>
+      <td>Sales</td>
+      <td>9</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>27</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>10</td>
+      <td>4</td>
+      <td>3</td>
+      <td>5</td>
+      <td>3</td>
+      <td>0</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>42</td>
+      <td>0</td>
+      <td>Travel_Rarely</td>
+      <td>691</td>
+      <td>Sales</td>
+      <td>8</td>
+      <td>4</td>
+      <td>Marketing</td>
+      <td>1</td>
+      <td>35</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>10</td>
+      <td>2</td>
+      <td>3</td>
+      <td>9</td>
+      <td>7</td>
+      <td>4</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>46</td>
+      <td>0</td>
+      <td>Travel_Rarely</td>
+      <td>705</td>
+      <td>Sales</td>
+      <td>2</td>
+      <td>4</td>
+      <td>Marketing</td>
+      <td>1</td>
+      <td>38</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>0</td>
+      <td>22</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ztest(x1 = base_sales['Attrition'], value = 0.25, alternative = "two-sided")
+```
+
+::: {.callout}
+    (-2.279392275404384, 0.0226437570988434)
+:::
+
+Como p-valor = 0.02 é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja, há evidências que a proporção de funcionários que passaram por problemas é diferente de 25%.
+
+### Exemplo 2:
+Deseja-se averiguar se é corretar afirmar que menos de `30%` dos funcionários do **departamento de pesquisa** do IBM passaram por algum problema na empresa, utilizando um nível de significância de `10%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : p = 0.3$
+
+vs
+
+$H_{1} : p< 0.3$
+
+```python
+base_pesq= base[base['Department'] == "Research & Development"] # Filtrar apenas os dados dos funcinários do departamento de vendas.
+base_pesq['Attrition'] = base_pesq['Attrition'].map({'Yes' : 1, 'No' : 0})
+base_pesq.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>49</td>
+      <td>0</td>
+      <td>Travel_Frequently</td>
+      <td>279</td>
+      <td>Research &amp; Development</td>
+      <td>8</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>10</td>
+      <td>3</td>
+      <td>3</td>
+      <td>10</td>
+      <td>7</td>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>37</td>
+      <td>1</td>
+      <td>Travel_Rarely</td>
+      <td>1373</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Other</td>
+      <td>1</td>
+      <td>4</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>7</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>33</td>
+      <td>0</td>
+      <td>Travel_Frequently</td>
+      <td>1392</td>
+      <td>Research &amp; Development</td>
+      <td>3</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>5</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>3</td>
+      <td>3</td>
+      <td>8</td>
+      <td>7</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>27</td>
+      <td>0</td>
+      <td>Travel_Rarely</td>
+      <td>591</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>1</td>
+      <td>Medical</td>
+      <td>1</td>
+      <td>7</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>6</td>
+      <td>3</td>
+      <td>3</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>32</td>
+      <td>0</td>
+      <td>Travel_Frequently</td>
+      <td>1005</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>8</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>2</td>
+      <td>2</td>
+      <td>7</td>
+      <td>7</td>
+      <td>3</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ztest(x1 = base_pesq['Attrition'], value = 0.30, alternative = "smaller")
+```
+
+::: {.callout}
+(-14.499935934146963, 6.063151045772378e-48)
+:::
+
+Como p-valor é menor do que o nível de significância proposto, rejeitamos $H_0$, ou seja, há evidências que a proporção de funcionários do departamento de vendas que passaram por algum problema é menos de 30%.
+
+### Exemplo 3:
+
+Deseja-se averiguar se é corretar afirmar que mais de `60%` dos funcionários do IBM que **frequentemente viajam a trabalho** passaram por algum problema na empresa, utilizando um nível de significância de `1%`.
+
+$H_{0} : p = 0.6$
+
+vs
+
+$H_{1} : p > 0.6$
+
+```python
+base_freq['Attrition'] = base_freq['Attrition'].map({'Yes' : 1, 'No' : 0})
+base_freq.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>49</td>
+      <td>0</td>
+      <td>Travel_Frequently</td>
+      <td>279</td>
+      <td>Research &amp; Development</td>
+      <td>8</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>10</td>
+      <td>3</td>
+      <td>3</td>
+      <td>10</td>
+      <td>7</td>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>33</td>
+      <td>0</td>
+      <td>Travel_Frequently</td>
+      <td>1392</td>
+      <td>Research &amp; Development</td>
+      <td>3</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>5</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>3</td>
+      <td>3</td>
+      <td>8</td>
+      <td>7</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>32</td>
+      <td>0</td>
+      <td>Travel_Frequently</td>
+      <td>1005</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>2</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>8</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>2</td>
+      <td>2</td>
+      <td>7</td>
+      <td>7</td>
+      <td>3</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>38</td>
+      <td>0</td>
+      <td>Travel_Frequently</td>
+      <td>216</td>
+      <td>Research &amp; Development</td>
+      <td>23</td>
+      <td>3</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>12</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>10</td>
+      <td>2</td>
+      <td>3</td>
+      <td>9</td>
+      <td>7</td>
+      <td>1</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>32</td>
+      <td>1</td>
+      <td>Travel_Frequently</td>
+      <td>1125</td>
+      <td>Research &amp; Development</td>
+      <td>16</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>33</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>0</td>
+      <td>10</td>
+      <td>5</td>
+      <td>3</td>
+      <td>10</td>
+      <td>2</td>
+      <td>6</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ztest(x1 = base_freq['Attrition'], value = 0.6, alternative = "larger")
+```
+
+::: {.callout}
+(-13.47921476827307, 1.0)
+:::
+
+Como p-valor = 1 é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, não há evidências de que mais de 60% dos funcionários que frequentemente viajam a trabalho tenham tido alguma complicação na empresa.
+
+## Teste de Hipóteses para a Variância
+
+Seja $X1, X2,…,Xn$ uma amostra aleatória de uma população com distribuição normal, com média μ e variância σ² desconhecidas.
+
+E suponha que estamos interessados em testar as hipóteses
+
+$H_{o}: \sigma^{2} = \sigma^{2}_{0}$
+
+vs
+
+$H_{1}: \sigma^{2} < ou  > ou \neq \sigma^{2}_{0}$,
+
+onde $σ_{0}^{2}$ > 0.
+
+Em qualquer dos casos, a estatística de teste Q é dada por:
+
+$Q = \frac{(n-1)S^{2}}{\sigma^{2}}\sim \chi^{2}_{(n-1)}$
+
+Após as definições das hipóteses e da estatística de teste, temos que o p-valor é calculado por:
+
+* Se $H_{1}: \sigma^{2} \neq \sigma^{2}_{0}$,
+
+`Missing or unrecognized delimiter for \left`
+
+* Se $H_{1}: \sigma^{2} > \sigma^{2}_{0}$,
+$p-valor = P (Q > Q_{obs}\mid H_{0})$
+
+
+* Se $H_{1}: \sigma^{2} < \sigma^{2}_{0}$
+$p-valor = P (Q < Q_{obs}\mid H_{0})$
+
+onde
+
+$Q_{obs} = \frac{(n-1)S^{2}}{\sigma_{0}^{2}}$
+
+Como não há funções pertencentes às bibliotecas **statsmodels** e **scipy** que realizam o teste para a variância, criamos uma função própria chamada `test_var` que retorna o $Q_{obs}$ e o p-valor, e recebe como argumentos de entrada:
+
+* `amostra`: amostra observada
+* `sigma2`: valor referente a $\sigma^{2}_{0}$
+* `alternative`: tipo da hipótese alternativa desejada: “two-sided” (bilateral) , “larger” (unilateral à direita) ou “smaller” (unilateral à esquerda).
+
+```python
+def test_var (amostra, sigma2, alternative= "two.sided"):
+    n=len(amostra)
+    qobs= (n-1)*np.var(amostra, ddof=1)/sigma2
+    
+    if(alternative == "smaller"):
+        pvalor = ss.chi2.cdf(qobs,n-1)
+    if(alternative == "larger"):
+        pvalor = 1 - ss.chi2.cdf(qobs,n-1)
+    if(alternative == "two.sided"):
+        pvalor = 2*np.minimum(1 - ss.chi2.cdf(qobs,n-1),ss.chi2.cdf(qobs,n-1))
+        
+    print('(%.16f,%.16f)' % (qobs,pvalor))
+```
+
+Agora vamos aplicar alguns exemplos práticos de forma a demonstrar a facilidade da aplicabilidade das funções e dos conceitos estatísticos já apresentados. Utilizaremos o banco de dados dos funcionários da empresa IBM.
+
+### Exemplo 1:
+Um dos diretores da empresa IBM afirmou que a variabilidade da idade dentre seus funcionários é de `76 anos²`. Dado que a idade dos funcionários segue uma distribuição normal com média e variância desconhecidas, deseja-se averiguar a veracidade da afirmação, utilizando um nível de significância de `1%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : \sigma^{2} = 76$
+
+vs
+
+$H_{1} : \sigma^{2} \neq 76$
+
+Nesse caso não é preciso realizar nenhum processo de filtragem, ou seja, utilzaremos a base original.
+
+```python
+test_var(amostra = base['Age'], sigma2 = 76, alternative = "two.sided")
+```
+
+::: {.callout}
+    (1613.0982456140357044,0.0096419873719233)
+:::
+
+Como p-valor = 0.009 é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja, temos evidências de que a variabilidade das idades dos funcionários é diferente de 76. Portanto a afirmação é considerada equivocada.
+
+### Exemplo 2:
+
+Um jornal local noticiou que a variabilidade dos anos de trabalho dos funcionários da empresa IBM é `inferior a 60 anos²`. Dado que os anos de trabalho dos funcionários da empresa IBM segue uma distribuição normal com média e variância desconhecidas, deseja-se averiguar a veracidade da afirmação, utilizando um nível de significância de `5%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : \sigma^{2} = 60$
+
+vs
+
+$H_{1} : \sigma^{2} < 60$
+
+Nesse caso, também não é preciso realizar nenhum processo de filtragem, ou seja, utilizaremos a base original.
+
+```python
+test_var(base['TotalWorkingYears'],60,"smaller")
+```
+
+::: {.callout}
+(1482.2347959183696275,0.6009205627661879)
+:::
+
+Como p-valor = 0.6 é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, não há evidências que a variabilidade dos anos de trabalho dos funcionários seja inferior a 60. Portanto, considera-se que a informação noticiada é incorreta.
+
+### Exemplo 3:
+Um dos funcionários da empresa afirmou que a variabilidade dos anos de trabalho dos funcionários da empresa IBM **casados** é `superior a 30 anos²`. Dado que os anos de trabalho dos funcionários casados da empresa IBM segue uma distribuição normal com média e variância desconhecidas, deseja-se averiguar a veracidade da afirmação, utilizando um nível de significância de `10%`.
+
+Através desse problema temos as hipóteses:
+
+$H_{0} : \sigma^{2} = 30$
+
+vs
+
+$H_{1} : \sigma^{2} > 30$
+
+Podemos achar essa informação através da variável `MaritalStatus` presente no banco de dados.
+
+```python
+base_casados = base[base['MaritalStatus'] == "Married"] 
+base_casados.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Attrition</th>
+      <th>BusinessTravel</th>
+      <th>DailyRate</th>
+      <th>Department</th>
+      <th>DistanceFromHome</th>
+      <th>Education</th>
+      <th>EducationField</th>
+      <th>EmployeeCount</th>
+      <th>EmployeeNumber</th>
+      <th>...</th>
+      <th>RelationshipSatisfaction</th>
+      <th>StandardHours</th>
+      <th>StockOptionLevel</th>
+      <th>TotalWorkingYears</th>
+      <th>TrainingTimesLastYear</th>
+      <th>WorkLifeBalance</th>
+      <th>YearsAtCompany</th>
+      <th>YearsInCurrentRole</th>
+      <th>YearsSinceLastPromotion</th>
+      <th>YearsWithCurrManager</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>49</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>279</td>
+      <td>Research &amp; Development</td>
+      <td>8</td>
+      <td>1</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>2</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>10</td>
+      <td>3</td>
+      <td>3</td>
+      <td>10</td>
+      <td>7</td>
+      <td>1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>33</td>
+      <td>No</td>
+      <td>Travel_Frequently</td>
+      <td>1392</td>
+      <td>Research &amp; Development</td>
+      <td>3</td>
+      <td>4</td>
+      <td>Life Sciences</td>
+      <td>1</td>
+      <td>5</td>
+      <td>...</td>
+      <td>3</td>
+      <td>80</td>
+      <td>0</td>
+      <td>8</td>
+      <td>3</td>
+      <td>3</td>
+      <td>8</td>
+      <td>7</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>27</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>591</td>
+      <td>Research &amp; Development</td>
+      <td>2</td>
+      <td>1</td>
+      <td>Medical</td>
+      <td>1</td>
+      <td>7</td>
+      <td>...</td>
+      <td>4</td>
+      <td>80</td>
+      <td>1</td>
+      <td>6</td>
+      <td>3</td>
+      <td>3</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>59</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>1324</td>
+      <td>Research &amp; Development</td>
+      <td>3</td>
+      <td>3</td>
+      <td>Medical</td>
+      <td>1</td>
+      <td>10</td>
+      <td>...</td>
+      <td>1</td>
+      <td>80</td>
+      <td>3</td>
+      <td>12</td>
+      <td>3</td>
+      <td>2</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>36</td>
+      <td>No</td>
+      <td>Travel_Rarely</td>
+      <td>1299</td>
+      <td>Research &amp; Development</td>
+      <td>27</td>
+      <td>3</td>
+      <td>Medical</td>
+      <td>1</td>
+      <td>13</td>
+      <td>...</td>
+      <td>2</td>
+      <td>80</td>
+      <td>2</td>
+      <td>17</td>
+      <td>3</td>
+      <td>2</td>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+test_var(amostra = base_casados['TotalWorkingYears'], sigma2 = 50, alternative = "larger")
+```
+
+::: {.callout}
+(834.6771471025249411,0.0000173254449680)
+:::
+
+Como p-valor = 0.00001 é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja há evidências que a variabilidade dos anos trabalhados entre os casados é superior a 30.Portanto a afirmação realizada é dada como verdadeira.
+
+# Inferência sobre Duas Populações
+
+## Teste de Hipóteses para Comparação de Duas Proporções
+
+Sejam ${X_{1} \sim N(\mu_{1}, \sigma^2_{1})}$ e ${X_{2} \sim N(µ_{2}, σ^2_{2})}$ duas amostras independentes de tamanho ${n_{1}}$ e ${n_{2}}$, respectivamente, e ${ \hat{p_{1}} }$ e ${ \hat{p_{2}} }$ estimadores de ${p_{1}}$ e ${p_{2}}$, proporção de ocorrência de um certo evento. Então, aproximadamente, ${\hat{p_{1}} \sim N\left ( p_{1}, \frac{p_{1}(1 - p_{1})}{n_{1}} \right )}$ e ${\hat{p_{2}} \sim N\left ( p_{2}, \frac{p_{2}(1 - p_{2})}{n_{2}} \right )}$ implicando ${\hat{p_{1}} - \hat{p_{2}} \sim N\left ( p_{1} - p_{2}, \frac{p_{1}(1 - p_{1})}{n_{1}}+ \frac{p_{2}(1 - p_{2})}{n_{2}} \right )}$. Portanto: 
+
+$Z = \frac{(\hat{p_{1}} - \hat{p_{2}}) - (p_{1} - p_{2})}{\sqrt{\frac{\hat{p_{1}}(1 - \hat{p_{1}})}{n_{1}} + \frac{\hat{p_{2}}(1 - \hat{p_{2}})}{n_{2}}}} \sim N(0, 1)$
+
+Para realizar o teste da comparação de duas proporções, existem 3 formas de propor as hipóteses nula e alternativa:
+
+$H_{0}: p_{1} - p_{2} = p_{0} \ \ \times \ \ H_{1}: p_{1} - p_{2} \neq p_{0}$
+
+ou
+
+$H_{0}: p_{1} - p_{2} = p_{0} \ \ \times \ \ H_{1}: p_{1} - p_{2} > p_{0}$
+
+ou
+
+$H_{0}: p_{1} - p_{2} = p_{0} \ \ \times \ \ H_{1}: p_{1} - p_{2} < p_{0}$
+
+onde $p_0 \in (0,1)$.
+
+Através da estatística de teste e a definição das hipóteses, para a tomada de decisão é preciso calcular o p-valor, cujas fórmulas são dadas por:
+
+* Se $H_{1} : p_{X} - p_{Y}\neq p_{0}$,
+$p-valor = P(|Z| \geq \left | Z_{obs} \right |\mid H_{0})$
+
+* Se $H_{1} : p_{X} - p_{Y} > p_{0}$,
+$p-valor = P(Z > Z_{obs}\mid H_{0} )$
+
+* Se $H_{1} : p_{X} - p_{Y} < p_{0}$,
+$p-valor = P(Z < Z_{obs}\mid H_{0} )$
+
+onde
+
+$Z_{obs} = \frac{(\hat{p}{1} - \hat{p}{2}) - p_{0}}{\sqrt{\frac{\hat{p}{1}(1 - \hat{p}{1})}{n_{1}} + \frac{\hat{p}{2}(1 - \hat{p}{2})}{n_{2}}}}$
+
+Para realizar esses cálculos no Python, utilizaremos a função `ztest()` da biblioteca **statsmodels**, já apresentado anteriormente, com os seguintes argumentos de entrada:
+
+* `x1`: a amostra observada.
+* `x2`: a segunda amostra observada.
+* `value`: valor associado a $p_{0}$
+* `alternative`: tipo da hipótese alternativa desejada: “two-sided” (bilateral) , “larger” (unilateral à direita) ou “smaller” (unilateral à esquerda).
+
+Agora vamos aplicar alguns exemplos práticos de forma a demonstrar a aplicabilidade das funções e dos conceitos estatísticos já apresentados. Utilizaremos um banco de dados que representa uma amostra aleatória simples de 562 filmes lançados no cinema no período de 2007 a 2011, com informações como gênero, orçamento e críticas presentes no site Rotten Tomatoes.
+
+```python
+df = pd.read_csv('Movie-Ratings.csv')
+df.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Film</th>
+      <th>Genre</th>
+      <th>Rotten Tomatoes Ratings %</th>
+      <th>Audience Ratings %</th>
+      <th>Budget (million $)</th>
+      <th>Year of release</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>(500) Days of Summer</td>
+      <td>Comedy</td>
+      <td>87</td>
+      <td>81</td>
+      <td>8</td>
+      <td>2009</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10,000 B.C.</td>
+      <td>Adventure</td>
+      <td>9</td>
+      <td>44</td>
+      <td>105</td>
+      <td>2008</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>12 Rounds</td>
+      <td>Action</td>
+      <td>30</td>
+      <td>52</td>
+      <td>20</td>
+      <td>2009</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>127 Hours</td>
+      <td>Adventure</td>
+      <td>93</td>
+      <td>84</td>
+      <td>18</td>
+      <td>2010</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>17 Again</td>
+      <td>Comedy</td>
+      <td>55</td>
+      <td>70</td>
+      <td>20</td>
+      <td>2009</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+### Exemplo 1
+Deseja-se avaliar se no período de 2007 a 2011, a proporção de **filmes de Comédia** lançados no cinema foi `igual` a proporção de **filmes de Aventura**, utilizando um nível de significância de `5%`.
+
+As hipóteses serão as seguintes:
+
+$H_{0} : p_{X} - p_{Y}  = 0$
+
+vs
+
+$H_{1} : p_{X} - p_{Y}\neq 0$
+
+Onde X ão filmes do gênero `Comédia` e Y, os filmes do gênero `Aventura`.
+
+```python
+df['Genre_Comedy'] = np.where(df.Genre == "Comedy", 1, 0)
+df['Genre_Adventure'] = np.where(df.Genre == "Adventure", 1, 0)
+df.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Film</th>
+      <th>Genre</th>
+      <th>Rotten Tomatoes Ratings %</th>
+      <th>Audience Ratings %</th>
+      <th>Budget (million $)</th>
+      <th>Year of release</th>
+      <th>Genre_Comedy</th>
+      <th>Genre_Adventure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>(500) Days of Summer</td>
+      <td>Comedy</td>
+      <td>87</td>
+      <td>81</td>
+      <td>8</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10,000 B.C.</td>
+      <td>Adventure</td>
+      <td>9</td>
+      <td>44</td>
+      <td>105</td>
+      <td>2008</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>12 Rounds</td>
+      <td>Action</td>
+      <td>30</td>
+      <td>52</td>
+      <td>20</td>
+      <td>2009</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>127 Hours</td>
+      <td>Adventure</td>
+      <td>93</td>
+      <td>84</td>
+      <td>18</td>
+      <td>2010</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>17 Again</td>
+      <td>Comedy</td>
+      <td>55</td>
+      <td>70</td>
+      <td>20</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+```python
+ztest(x1=df.Genre_Comedy, x2= df.Genre_Adventure, value = 0, alternative = 'two-sided')
+```
+
+::: {.callout}
+(11.789438693301005, 4.42480180658489e-32)
+:::
+
+Como o p-valor é menor que o nível de significância proposto, rejeitamos $H_0$, ou seja, há evidências que as proporções de filmes de Comédia e de Aventura lançados no período de 2007 a 2011 nos cinema sejam diferentes.
+
+### Exemplo 2
+Baseado no resultado do exemplo anterior, sabe-se que as proporções de filmes de comédia e aventura em 2007-2011 são consideradas diferentes. Então, através disso, deseja-se avaliar se a proporção de **filmes de Comédia** é `maior` que a proporção de **filmes de Aventura** lançados nos cinemas em 2007-2011, utilizando um nível de significância de `1%`.
+
+As hipóteses serão as seguintes:
+
+$H_{0} : p_{X} - p_{Y}  = 0$
+
+vs
+
+$H_{1} : p_{X} - p_{Y} > 0$ $\Rightarrow$ $H_{1} : p_{X} > p_{Y}$
+
+
+Onde X são filmes do gênero `Comédia` e Y, os filmes do gênero `Aventura`.
+
+```python
+ztest(x1=df.Genre_Comedy, x2=df.Genre_Adventure, value = 0, alternative = 'larger')
+```
+
+::: {.callout}
+(11.789438693301005, 2.212400903292445e-32)
+:::
+
+Como p-valor é menor que o nível de significância proposto, rejeitamos $H_0$, ou seja, há evidências que foram lançados mais filmes do gênero Comédia do que filmes do gênero Aventura nos cinemas no período de 2007 a 2011.
+
+## Teste de Hipótese para Razão das Variâncias
+
+Sejam ${X_1 \sim N(µ_{1}, σ^2{1})}$ e ${X_2 \sim N(µ{2}, σ^2{2})}$ duas amostras independentes de tamanho ${n{1}}{n_{2}}$ e ${S^2{1}}{S^2{2}}$ suas variâncias amostrais. Então,
+
+$F = \frac{\frac{S^{2}{1}}{S^{2}{2}}}{\frac{\sigma^{2}{1}}{\sigma ^{2}{2}}} \sim F_{n_{1} - 1, n_{2} - 1}$
+
+Para realizar o teste para razão de duas variâncias, existem 3 formas de propor as hipóteses nula e alternativa:
+
+* $H_{0}: \frac{\sigma^{2}_{1}}{\sigma^{2}_{2}} = \sigma^{2}_{0} \ \ \times \ \ H_{1}: \frac{\sigma^{2}_{1}}{\sigma^{2}_{2}} \neq \sigma^{2}_{0}$
+
+* $H_{0}: \frac{\sigma^{2}_{1}}{\sigma^{2}_{2}} = \sigma^{2}_{0} \ \ \times \ \ H_{1}: \frac{\sigma^{2}_{1}}{\sigma^{2}_{2}} < \sigma^{2}_{0}$
+
+* $H_{0}: \frac{\sigma^{2}_{1}}{\sigma^{2}_{2}} = \sigma^{2}_{0} \ \ \times \ \ H_{1}: \frac{\sigma^{2}_{1}}{\sigma^{2}_{2}} > \sigma^{2}_{0}$
+
+Através da estatística de teste e a definição das hipóteses, para a tomada de decisão é preciso calcular o p-valor, cujas fórmulas são dadas por:
+
+* Se `$H_{1} : \frac{\sigma^2{X}}{\sigma^2{Y}}\neq \sigma^2{0}p-valor = 2\times min\left { P\left ( F \geq F{obs} \mid H_{0}\right ), P\left ( F \leq F_{obs} \mid H_{0}\right ) \right }$`
+
+* Se $H_{1} : \frac{\sigma^2{X}}{\sigma^2{Y}}< \sigma^2{0}p-valor = P\left ( F < F{obs}\mid H_{0} \right )$
+
+* Se $H_{1} : \frac{\sigma^2{X}}{\sigma^2{Y}}> \sigma^2{0}p-valor = P\left ( F > F{obs} \mid H_{0}\right )$
+
+onde
+
+$F_{obs} = \frac{\frac{S^{2}{1}}{S^{2}{2}}}{\frac{\sigma^{2}{1}}{\sigma ^{2}{2}}}$
+
+Infelizmente, assim como no caso de uma população, o Python não possui função para avaliar a razão das variâncias. Por isso, construímos a nossa própria função, cujos argumentos de entrada são:
+
+* `x1`: primeira amostra;
+* `x2`: segunda amostra;
+* `value`: valor de ${\sigma^{2}_{0}}$;
+* `alternative`: ‘two-sided’ (default): H1: razão das variâncias é diferente que `value`; ‘larger’: H1: razão das variâncias é maior que `value`; ‘smaller’: H1: razão das variâncias é menor que `value`.
+
+Essa função retorna a estatística de teste F e o p-valor calculado.
+
+```python
+# razão das variâncias
+
+def rvar_test(x1, x2, value, alternative):
+    stattest = (np.var(x1)/np.var(x2))/value
+    
+    if alternative == 'smaller':
+        pvalor = ss.f.cdf(stattest, len(x1) - 1, len(x2) - 1)
+    elif alternative == 'larger':
+        pvalor = 1 - ss.f.cdf(stattest, len(x1) - 1, len(x2) - 1)
+    elif alternative == 'two-sided':
+        pvalor = 2*ss.f.cdf(stattest, len(x1) - 1, len(x2) - 1)
+        if pvalor >= 1:
+            pvalor = 1
+        
+    print('(%.16f,%.16f)' % (stattest,pvalor)) 
+```
+
+Agora vamos aplicar alguns exemplos práticos de forma a demonstrar a facilidade da aplicabilidade da função e dos conceitos estatísticos já apresentados. Utilizaremos o banco de dados de avaliações de filmes.
+
+### Exemplo
+Dado que os orçamentos dos filmes de Ação e Aventura seguem distribuições normais com médias e variâncias desconhecidas. Deseja-se avaliar, ao nível de significância de `5%`, se a razão das variâncias dos orçamentos dos filmes de **Ação e Aventura** é igual a `1`. Ou seja, verificar se as variâncias são iguais.
+
+As hipótetes serão as seguintes:
+
+$H_{0} : \frac{\sigma^2{X}}{\sigma^2{Y}} = 1$
+
+vs
+
+$H_{1} : \frac{\sigma^2{X}}{\sigma^2{Y}}\neq 1$
+
+Onde X são os orçamentos dos filmes de `Ação` e Y, os orçamentos dos filmes de `Aventura`.
+
+## Teste de Hipótese para Comparação de Médias para Duas Populações Independentes
+
+Sejam ${X \sim N(µ_{X}, σ^2{X})}$ e ${Y \sim N(µ{Y}, σ^2_{Y})}$ duas amostras independentes com variâncias desconhecidas. Se, ao relizarmos o teste da razão das variâncias, constatarmos que as variâncias são iguais, teremos o seguinte caso:
+
+$T = \frac{ (\bar{X} - \bar{Y}) - \mu }{ \sqrt{S^2{comb} \left ( \frac{1}{n{X}} + \frac{1}{n_{Y}} \right ) } } \sim t_{n_{X} + n_{Y} - 2}$
+
+Onde,
+
+$S^{2}{comb} = \frac{(n{X} - 1)S^2{X} + (n{Y} - 1)S^2{Y}}{n{X} + n_{Y} - 2}$
+
+Se, ao relizarmos o teste da razão das variâncias, constatarmos que as variâncias são diferentes, teremos o seguinte caso:
+
+$T = \frac{ (\bar{X} - \bar{Y}) - \mu }{ \sqrt{ \frac{S^2{X}}{n{X}} + \frac{S^2{Y}}{n{Y}} } } \sim t_{v}$
+
+Onde,
+
+$v = \frac{ \left ( \frac{s^2{X}}{n{X}} + \frac{s^2{Y}}{n{Y}} \right )^2 }{ \frac{1}{n_{X} - 1}\left ( \frac{s^2{X}}{n{X}} \right )^2 + \frac{1}{n_{Y} - 1}\left ( \frac{s^2{Y}}{n{Y}} \right )^2 }$
+
+Para realizar o teste da comparação de duas médias, existem 3 formas de propor as hipóteses nula e alternativa:
+
+* $H_{0}: \mu_{X} - \mu_{Y} = \mu_{0} \ \ \times \ \ H_{1}: \mu_{X} - \mu_{Y} \neq \mu_{0}$
+* $H_{0}: \mu_{1} - \mu_{2} = \mu_{0} \ \ \times \ \ H_{1}: \mu_{1} - \mu_{2} > \mu_{0}$
+* $H_{0}: \mu_{1} - \mu_{2} = \mu_{0} \ \ \times \ \ H_{1}: \mu_{1} - \mu_{2} < \mu_{0}$
+
+Dada as estatísticas de teste e a definição das hipóteses, é preciso calcular o p-valor para a tomada de decisão, cujas fórmulas são dadas por:
+
+* Se $H_{1}: \mu_{X} - \mu_{Y} \neq \mu_{0}$,
+`$p-valor = P\left (	T	> \left	T_{obs} \right	\mid H_{0} \right)$`
+
+* Se $H_{1}: \mu_{X} - \mu_{Y} > \mu_{0}$,
+$p-valor = P\left ( T > T_{obs} \mid H_{0}\right )$
+
+* Se $H_{1}: \mu_{X} - \mu_{Y} < \mu_{0}$,
+$p-valor = P\left ( T < T_{obs} \mid H_{obs} \right )$
+
+onde
+
+$T_{obs} = \frac{ (\bar{X} - \bar{Y}) - \mu_{0} }{ \sqrt{S^2{comb} \left ( \frac{1}{n{X}} + \frac{1}{n_{Y}} \right ) } }$
+
+quando as variâncias são iguais, ou
+
+$T_{obs} = \frac{ (\bar{X} - \bar{Y}) - \mu_{0} }{ \sqrt{ \frac{S^2{X}}{n{X}} + \frac{S^2{Y}}{n{Y}} } }$
+
+quando as variâncias são diferentes.
+
+Para realizar esses cálculos no Python, utilizaremos a função `ttest_ind()` da biblioteca **statsmodels**, cujos argumentos de entrada são:
+
+* `x1`: amostra X.
+* `x2`: amostra Y.
+* `value`: valor de ${\mu_{0}}$.
+* `alternative`: ‘two-sided’ (default): H1: diferença entre as médias é diferente que `value`; ‘larger’: H1: diferença entre as médias é maior que `value`; ‘smaller’: H1: diferença entre as médias é menor que `value`.
+* `usevar`: ‘pooled’ se as variâncias são iguais, ‘unequal’ se as variâncias são diferentes.
+
+Essa função retornará a estatística de teste, o pvalor e os graus de liberdade, respectivamente.
+
+Agora vamos aplicar alguns exemplos práticos de forma a demonstrar a facilidade da aplicabilidade da função e dos conceitos estatísticos já apresentados. Utilizaremos o banco de dados de avaliações de filmes.
+
+### Exemplo 1
+Queremos avaliar se a média dos orçamentos dos filmes de **Ação e Aventura** são `iguais`, ao nível de significância de `5%`:
+
+As hipóteses serão as seguintes:
+
+$H_{0} : \mu_{X} - \mu_{Y}  = 0$
+
+vs
+
+$H_{1} : \mu_{X} - \mu_{Y}\neq 0$
+
+Onde X são os orçamentos dos filmes de `Ação` e Y, os orçamentos dos filmes de `Aventura`.
+
+Primeiro iremos aplicar o teste de razão de variâncias `rvar_test` para testar a igualdade entre elas. Utilize também o nível de significância de `5%`
+
+```python
+rvar_test(x1 = df_acao["Budget (million $)"],x2 = df_adventure["Budget (million $)"],value=1,alternative="two-sided")
+```
+
+::: {.callout}
+    (1.1885458719831832,1.0000000000000000)
+:::
+
+Como p-valor=1 sendo maior que o nível de significância proposto, há evidências de que as varianças são **iguais**. Agora aplicaremos o teste de comparação de médias considerando as variâncias iguais.
+
+```python
+ttest_ind(x1 = df_acao["Budget (million $)"],x2 = df_adventure["Budget (million $)"], alternative = 'two-sided', usevar = 'pooled', value = 0)
+```
+
+::: {.callout}
+(0.24627191134923368, 0.8057508151994627, 181.0)
+:::
+
+Como p-valor= 0.80 é maior que no nível de significância proposto, não rejeitamos a hipótese nula, ou seja, há evidências de que os orçamentos dos filmes de Ação e Aventura são iguais.
+
+### Exemplo 2
+
+A revista “The Hollywood Reporter” afirmou que a média dos orçamentos dos filmes de **Ação** é `superior` à média dos orçamentos dos filmes de **Comédia**. Deseja-se avaliar a veracidade dessa informação, ao nível de significância de `5%`.
+
+As hipóteses serão as seguintes:
+
+$H_{0} : \mu_{X} - \mu_{Y}  = 0$
+
+vs
+
+$H_{1} : \mu_{X} - \mu_{Y}\ > 0$ $\Rightarrow$ $H_{1} : \mu_{X} > \mu_{Y}$
+
+Onde X são os orçamentos dos filmes de `Ação` e Y, os orçamentos dos filmes de `Comédia`.
+
+```python
+df_comedia = df[df["Genre"] == 'Comedy']
+df_comedia.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Film</th>
+      <th>Genre</th>
+      <th>Rotten Tomatoes Ratings %</th>
+      <th>Audience Ratings %</th>
+      <th>Budget (million $)</th>
+      <th>Year of release</th>
+      <th>Genre_Comedy</th>
+      <th>Genre_Adventure</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>(500) Days of Summer</td>
+      <td>Comedy</td>
+      <td>87</td>
+      <td>81</td>
+      <td>8</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>17 Again</td>
+      <td>Comedy</td>
+      <td>55</td>
+      <td>70</td>
+      <td>20</td>
+      <td>2009</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>27 Dresses</td>
+      <td>Comedy</td>
+      <td>40</td>
+      <td>71</td>
+      <td>30</td>
+      <td>2008</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>30 Minutes or Less</td>
+      <td>Comedy</td>
+      <td>43</td>
+      <td>48</td>
+      <td>28</td>
+      <td>2011</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>50/50</td>
+      <td>Comedy</td>
+      <td>93</td>
+      <td>93</td>
+      <td>8</td>
+      <td>2011</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+Primeiro iremos aplicar o teste de razão de variâncias `rvar_test` para testar a igualdade entre elas. Utilize o nível de significância de `5%`.
+
+```python
+rvar_test(x1 = df_acao["Budget (million $)"], x2= df_comedia["Budget (million $)"],value=1,alternative="larger")
+```
+
+::: {.callout}
+    (5.6148884065672879,0.0000000000000001)
+:::
+
+Como o p-valor é menor que o nível de significância proposto, temos que as variâncias são diferentes. Agora realizaremos o teste de comparação de médias considerando variâncias diferentes.
+
+```python
+ttest_ind(x1 = df_acao["Budget (million $)"],x2 = df_comedia["Budget (million $)"], alternative = 'two-sided', usevar = 'unequal', value = 0)
+```
+
+:::{.callout}
+    (8.765572657433554, 7.820570304870018e-16, 201.07797410706948)
+:::
+
+Como p-valor é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja, há evidências de que a média dos orçamentos dos filmes de Ação é superior à média dos orçamentos dos filmes de Comédia.
+
+## Teste de Hipótese para Comparação de Médias para Duas Populações Dependentes
+
+Sejam ${X \sim N(µ_{X}, σ^2{X})}$ e ${Y \sim N(µ{Y}, σ^2{Y})}$ duas amostras pareadas tal que consideramos os pares ${(X{1}, Y_{1}), \ …, \ (X_{n}, Y_{n})}$. Definindo ${D = X - Y}$, temos que ${D \sim N(µ_{D}, σ^2{D})}$, com ${µ{d} = µ_{X} - µ_{Y}}$. Assim,
+
+$T= \frac{\bar{D} - \mu}{\sqrt{\frac{S^2{D}}{n}}} \sim t{n-1}$
+
+onde,
+
+$D_{i} = X_{i} - Y_{i}$ e $\bar{D} = \sum_{i = 1}^{n} \frac{D_{i}}{n}$
+
+Assim como nos outros casos, existirão 3 hipóteses possíveis, e suas formas de calcular o pvalor:
+
+* $H_{0}: \mu_{D} = \mu_{0} \ \ \times \ \ H_{1}: \mu_{D} \neq \mu_{0}$
+
+* $H_{0}: \mu_{D} = \mu_{0} \ \ \times \ \ H_{1}: \mu_{D} > \mu_{0}$
+
+* $H_{0}: \mu_{D} = \mu_{0} \ \ \times \ \ H_{1}: \mu_{D} < \mu_{0}$
+
+
+Se $H_{1}: \mu_{D} \neq \mu_{0}$,
+
+`$p-valor = P (\left	T \right	>\left	T_{obs} \right	\mid H_{0})$`
+
+Se $H_{1}: \mu_{D} > \mu_{0}$,
+$p-valor = P (T > T_{obs}\mid H_{0})$
+
+Se $H_{1}: \mu_{D} < \mu_{0}$,
+$p-valor = P (T < T_{obs}\mid H_{0})$
+
+onde
+
+$T_{obs}= \frac{\bar{D} - \mu_{0}}{\sqrt{\frac{S^2_{D}}{n}}}$
+
+Definindo ${D = X - Y}$, temos o caso de Teste de Hipótese para Média de uma população. Portanto, após obtermos D, podemos aplicar as funções `ttest_1samp` e `ttest_uni` já apresentadas no material.
+
+Para aplicações, utilizaremos o banco de dados que representa uma amostra aleatória simples de 198 pessoas. Essa base representa um experimento sobre os efeitos do medicamento ansiolíticos na utilização da memória.
+
+```python
+data = pd.read_csv("Islander_data.csv")
+data.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>age</th>
+      <th>Happy_Sad_group</th>
+      <th>Dosage</th>
+      <th>Drug</th>
+      <th>Mem_Score_Before</th>
+      <th>Mem_Score_After</th>
+      <th>Diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Bastian</td>
+      <td>Carrasco</td>
+      <td>25</td>
+      <td>H</td>
+      <td>1</td>
+      <td>A</td>
+      <td>63.5</td>
+      <td>61.2</td>
+      <td>-2.3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Evan</td>
+      <td>Carrasco</td>
+      <td>52</td>
+      <td>S</td>
+      <td>1</td>
+      <td>A</td>
+      <td>41.6</td>
+      <td>40.7</td>
+      <td>-0.9</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Florencia</td>
+      <td>Carrasco</td>
+      <td>29</td>
+      <td>H</td>
+      <td>1</td>
+      <td>A</td>
+      <td>59.7</td>
+      <td>55.1</td>
+      <td>-4.6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Holly</td>
+      <td>Carrasco</td>
+      <td>50</td>
+      <td>S</td>
+      <td>1</td>
+      <td>A</td>
+      <td>51.7</td>
+      <td>51.2</td>
+      <td>-0.5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Justin</td>
+      <td>Carrasco</td>
+      <td>52</td>
+      <td>H</td>
+      <td>1</td>
+      <td>A</td>
+      <td>47.0</td>
+      <td>47.1</td>
+      <td>0.1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+### Exemplo 1
+
+Um experimento foi realizado com moradores de diversas ilhas, onde foi possível testar os efeitos de remédios ansiolíticos no uso da memória. Sabendo que os tempos dos testes de memória, antes e depois, dos moradores expostos ao medicamento `A` seguem uma distribuição normal com média e variância desconhecidas, deseja-se avaliar se a droga `A` afeta o uso da memória, seja positivamente ou negativamente, observando a diferença do tempo do teste de memória antes e depois da exposição ao medicamento, ao nível de significância de `5%`.
+
+As hipótetes serão as seguintes:
+
+$H_{0} : \mu_{X} - \mu_{Y}  = 0$ $\Rightarrow$ $H_{0} : \mu_{D}  = 0$
+
+vs
+
+$H_{1} : \mu_{X} - \mu_{Y} \neq 0$ $\Rightarrow$ $H_{1} : \mu_{D} \neq 0$
+ 
+
+Onde D é a diferença entre o tempo de resposta do teste depois (X) e antes (Y) do uso da droga `A`.
+
+```python
+data_A = data[data['Drug'] == 'A']
+data_A.head()
+```
+
+```{=html}
+<div style="overflow-x:auto">
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe table-striped table-bordered table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>first_name</th>
+      <th>last_name</th>
+      <th>age</th>
+      <th>Happy_Sad_group</th>
+      <th>Dosage</th>
+      <th>Drug</th>
+      <th>Mem_Score_Before</th>
+      <th>Mem_Score_After</th>
+      <th>Diff</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Bastian</td>
+      <td>Carrasco</td>
+      <td>25</td>
+      <td>H</td>
+      <td>1</td>
+      <td>A</td>
+      <td>63.5</td>
+      <td>61.2</td>
+      <td>-2.3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Evan</td>
+      <td>Carrasco</td>
+      <td>52</td>
+      <td>S</td>
+      <td>1</td>
+      <td>A</td>
+      <td>41.6</td>
+      <td>40.7</td>
+      <td>-0.9</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Florencia</td>
+      <td>Carrasco</td>
+      <td>29</td>
+      <td>H</td>
+      <td>1</td>
+      <td>A</td>
+      <td>59.7</td>
+      <td>55.1</td>
+      <td>-4.6</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Holly</td>
+      <td>Carrasco</td>
+      <td>50</td>
+      <td>S</td>
+      <td>1</td>
+      <td>A</td>
+      <td>51.7</td>
+      <td>51.2</td>
+      <td>-0.5</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Justin</td>
+      <td>Carrasco</td>
+      <td>52</td>
+      <td>H</td>
+      <td>1</td>
+      <td>A</td>
+      <td>47.0</td>
+      <td>47.1</td>
+      <td>0.1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+```
+
+Utilizaremos a variável `Diff` que já contém os valores das diferenças dos tempos de resposta dos testes de memórias, sendo calculado da forma: `Diff = Mem_Score_After - Mem_Score_Before`.
+
+```python
+ss.ttest_1samp(a = data_A['Diff'], popmean =  0)
+Ttest_1sampResult(statistic=5.848567939730841, pvalue=1.6898179935298675e-07)
+```
+
+Como p-valor é menor que no nível de significância proposto, rejeitamos a hipótese nula, ou seja, há evidências de que o medicamento afeta, seja positivamente ou negativamente, o uso da memória.
+
+### Exemplo 2
+Dado que no exemplo anterior as médias dos tempos foram considerados diferentes, iremos avaliar se a droga **A** afeta o uso da memória `positivamente`, ao nível de significância de `1%`.
+
+As hipótetes serão as seguintes:
+
+$H_{0} : \mu_{X} - \mu_{Y}  = 0$ $\Rightarrow$ $H_{0} : \mu_{D}  = 0$
+
+vs
+
+$H_{1} : \mu_{X} - \mu_{Y} > 0$ $\Rightarrow$ $H_{1} : \mu_{D} > 0$
+
+Onde D é a diferença entre o tempo de resposta do teste depois (X) e antes (Y) do uso da droga `A`.
+
+```python
+ttest_uni(amostra = data_A['Diff'],popmean = 0, alternative = "larger")
+```
+:::{.callout}
+    (5.8485679397308408, 0.0000000844908996)
+:::
+
+Como p-valor é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja, há evidências de que o tempo de resposta do teste depois do uso do medicamento foi maior do que antes. Portanto, tem-se que o medicamento A afeta positivamente o uso da memória.
+
+# Referências
+FARIAS, A. M. L. **Apostila de Estatística II**. Departamento de Estatística. 2017. Universidade Federal Fluminense. Velarde, L. G. C. CAVALIERE, Y. F. **Apostila Inferência Estatística**. Departamento de Estatística. Universidade Federal Fluminense
+

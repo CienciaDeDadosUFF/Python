@@ -1,7 +1,30 @@
-# Bem-vindo {.unnumbered}
+---
+title:  "Apresentação"
+format:
+  html:
+    code-fold: false
+toc: true
+toc-title: Navegação
+number-sections: false
+jupyter: python3
+---
 
-Este curso tem como objetivo propagar as ideias básicas de aprendizado de máquina e previsão no \*software\* estatístico R. A ideia principal é cobrir as técnicas mais usadas como regressão linear, árvores de decisão, e também detalhes básicos e aspectos práticos do aprendizado de máquina. Inicialmente será utilizado alguns códigos básicos do R para alguns modelos de previsão. Contudo, o foco principal será no pacote caret, o qual tem a finalidade de tornar as técnicas de aprendizado mais simples, combinando um grande número de preditores que foram construídos no R.
+# Apresentação
 
-## **Pré-requisitos**
+Breve introdução sobre os objetivos da página, abordagem etc.
 
-Os pré-requisitos que serão úteis para o curso são: análise exploratória de dados no R, programação básica em R e conhecimentos teóricos básicos sobre modelos de regressão.
+# Introdução a programação com Python
+
+Falar o que será abordado aqui
+
+# Aprofundamento em programação com Python
+
+# Conceitos Gerais de Estatística
+
+# Visualização de Dados
+
+# Estimativa por Intervalos
+
+# Teste de Hipóteses Parte 1
+
+# Teste de Hipóteses Parte 2

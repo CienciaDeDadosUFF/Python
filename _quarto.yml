@@ -2,7 +2,7 @@ project:
   type: book
 
 book:
-  title: "APRENDIZADO DE MÁQUINA COM R"
+  title: "APRENDIZADO DE MÁQUINA COM PYTHON"
   reader-mode: true
   back-to-top-navigation: true
   search: true
@@ -16,23 +16,22 @@ book:
       Colaboradores: Gabriel Miranda e Thiago Augusto.
   repo-url: https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io
   downloads: [pdf]
+  #repo-actions: false #apenas se versão do quarto > 1.4 
+  
   
   chapters:
     - index.qmd
-    - intro.qmd
-    - tipos-am.qmd
-    - pred.qmd
-    - design-pred.qmd
-    - erros-amostrais.qmd
-    - caret.qmd
-    - cross-valid.qmd
-    - comp-func.qmd
-    - teste-link.qmd
-     #   - references.qmd
+    - "caderno1.qmd"
+    - "caderno2.qmd"
+    - "ConceitosGeraisDeEstatistica.qmd"
+    - "VisualizacaoDeDados.qmd"
+    - "EstimativaPorIntervalos.qmd"
+    - "TesteDeHipotesesParte1.qmd"
+    - "TesteDeHipotesesParte2.qmd"
 
 
 
-bibliography: references.bib
+#bibliography: references.bib
 
 format:
   html:
@@ -43,4 +42,3 @@ format:
     documentclass: scrreprt
 
 editor: visual
-

@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.353">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>APRENDIZADO DE MÁQUINA COM R</title>
+<title>APRENDIZADO DE MÁQUINA COM PYTHON</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./intro.html" rel="next">
+<link href="./caderno1.html" rel="next">
 <link href="./uff-brasao.jpg" rel="icon" type="image/jpeg">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -59,7 +59,8 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit"
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
@@ -75,10 +76,10 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Bem-vindo</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Apresentação</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -90,10 +91,10 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">APRENDIZADO DE MÁQUINA COM R</a> 
+      <a href="./">APRENDIZADO DE MÁQUINA COM PYTHON</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./APRENDIZADO-DE-MÁQUINA-COM-R.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./APRENDIZADO-DE-MÁQUINA-COM-PYTHON.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
       <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
@@ -136,55 +137,49 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Bem-vindo</span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Apresentação</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introdução</span></a>
+  <a href="./caderno1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introdução a programação com Python</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./tipos-am.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Tipos de Aprendizado de Máquina</span></a>
+  <a href="./caderno2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Aprofundamento em programação com Python</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./pred.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Predição</span></a>
+  <a href="./ConceitosGeraisDeEstatistica.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Conceitos Gerais de Estatística</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./design-pred.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Design de predição</span></a>
+  <a href="./VisualizacaoDeDados.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Visualização de Dados</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./erros-amostrais.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Erros Amostrais</span></a>
+  <a href="./EstimativaPorIntervalos.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Estimativa por Intervalos</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./caret.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Avaliando Preditores - Introdução ao Pacote Caret</span></a>
+  <a href="./TesteDeHipotesesParte1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Teste de Hipóteses - Parte 1</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./cross-valid.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cross Validation (Validação Cruzada)</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./teste-link.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">teste-link.html</span></span></a>
+  <a href="./TesteDeHipotesesParte2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Teste de Hipóteses - Parte 2</span></span></a>
   </div>
 </li>
     </ul>
@@ -194,13 +189,17 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+    <h2 id="toc-title">Navegação</h2>
    
   <ul>
-  <li><a href="#bem-vindo" id="toc-bem-vindo" class="nav-link active" data-scroll-target="#bem-vindo">Bem-vindo</a>
-  <ul class="collapse">
-  <li><a href="#pré-requisitos" id="toc-pré-requisitos" class="nav-link" data-scroll-target="#pré-requisitos"><strong>Pré-requisitos</strong></a></li>
-  </ul></li>
+  <li><a href="#apresentação" id="toc-apresentação" class="nav-link active" data-scroll-target="#apresentação">Apresentação</a></li>
+  <li><a href="#introdução-a-programação-com-python" id="toc-introdução-a-programação-com-python" class="nav-link" data-scroll-target="#introdução-a-programação-com-python">Introdução a programação com Python</a></li>
+  <li><a href="#aprofundamento-em-programação-com-python" id="toc-aprofundamento-em-programação-com-python" class="nav-link" data-scroll-target="#aprofundamento-em-programação-com-python">Aprofundamento em programação com Python</a></li>
+  <li><a href="#conceitos-gerais-de-estatística" id="toc-conceitos-gerais-de-estatística" class="nav-link" data-scroll-target="#conceitos-gerais-de-estatística">Conceitos Gerais de Estatística</a></li>
+  <li><a href="#visualização-de-dados" id="toc-visualização-de-dados" class="nav-link" data-scroll-target="#visualização-de-dados">Visualização de Dados</a></li>
+  <li><a href="#estimativa-por-intervalos" id="toc-estimativa-por-intervalos" class="nav-link" data-scroll-target="#estimativa-por-intervalos">Estimativa por Intervalos</a></li>
+  <li><a href="#teste-de-hipóteses-parte-1" id="toc-teste-de-hipóteses-parte-1" class="nav-link" data-scroll-target="#teste-de-hipóteses-parte-1">Teste de Hipóteses Parte 1</a></li>
+  <li><a href="#teste-de-hipóteses-parte-2" id="toc-teste-de-hipóteses-parte-2" class="nav-link" data-scroll-target="#teste-de-hipóteses-parte-2">Teste de Hipóteses Parte 2</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -209,7 +208,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">APRENDIZADO DE MÁQUINA COM R</h1>
+<h1 class="title">APRENDIZADO DE MÁQUINA COM PYTHON</h1>
 </div>
 
 
@@ -224,15 +223,33 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="bem-vindo" class="level1 unnumbered">
-<h1 class="unnumbered">Bem-vindo</h1>
-<p>Este curso tem como objetivo propagar as ideias básicas de aprendizado de máquina e previsão no *software* estatístico R. A ideia principal é cobrir as técnicas mais usadas como regressão linear, árvores de decisão, e também detalhes básicos e aspectos práticos do aprendizado de máquina. Inicialmente será utilizado alguns códigos básicos do R para alguns modelos de previsão. Contudo, o foco principal será no pacote caret, o qual tem a finalidade de tornar as técnicas de aprendizado mais simples, combinando um grande número de preditores que foram construídos no R.</p>
-<section id="pré-requisitos" class="level2">
-<h2 class="anchored" data-anchor-id="pré-requisitos"><strong>Pré-requisitos</strong></h2>
-<p>Os pré-requisitos que serão úteis para o curso são: análise exploratória de dados no R, programação básica em R e conhecimentos teóricos básicos sobre modelos de regressão.</p>
-
-
+<section id="apresentação" class="level1">
+<h1>Apresentação</h1>
+<p>Breve introdução sobre os objetivos da página, abordagem etc.</p>
 </section>
+<section id="introdução-a-programação-com-python" class="level1">
+<h1>Introdução a programação com Python</h1>
+<p>Falar o que será abordado aqui</p>
+</section>
+<section id="aprofundamento-em-programação-com-python" class="level1">
+<h1>Aprofundamento em programação com Python</h1>
+</section>
+<section id="conceitos-gerais-de-estatística" class="level1">
+<h1>Conceitos Gerais de Estatística</h1>
+</section>
+<section id="visualização-de-dados" class="level1">
+<h1>Visualização de Dados</h1>
+</section>
+<section id="estimativa-por-intervalos" class="level1">
+<h1>Estimativa por Intervalos</h1>
+</section>
+<section id="teste-de-hipóteses-parte-1" class="level1">
+<h1>Teste de Hipóteses Parte 1</h1>
+</section>
+<section id="teste-de-hipóteses-parte-2" class="level1">
+<h1>Teste de Hipóteses Parte 2</h1>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -588,8 +605,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./intro.html" class="pagination-link">
-        <span class="nav-page-text">Introdução</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./caderno1.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Introdução a programação com Python</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
