@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>APRENDIZADO DE MÁQUINA COM PYTHON - Teste de Hipóteses - Parte 1</title>
+<title>Teste de Hipóteses - Parte 1 – APRENDIZADO DE MÁQUINA COM PYTHON</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -22,7 +22,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -73,18 +73,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
   "panel-placement": "start",
   "type": "textbox",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -93,14 +99,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -110,13 +144,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./TesteDeHipotesesParte1.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Teste de Hipóteses - Parte 1</span></a></li></ol></nav>
-      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-      </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./TesteDeHipotesesParte1.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Teste de Hipóteses - Parte 1</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -125,31 +159,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">APRENDIZADO DE MÁQUINA COM PYTHON</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
-    <a href="./APRENDIZADO-DE-MÁQUINA-COM-PYTHON.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+    <a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./APRENDIZADO-DE-MÁQUINA-COM-PYTHON.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
-      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
-              <i class="bi bi-bi-twitter pe-1"></i>
+              <i class="bi bi-twitter pe-1"></i>
             Twitter
             </a>
           </li>
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
-              <i class="bi bi-bi-facebook pe-1"></i>
+              <i class="bi bi-facebook pe-1"></i>
             Facebook
             </a>
           </li>
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
-              <i class="bi bi-bi-linkedin pe-1"></i>
+              <i class="bi bi-linkedin pe-1"></i>
             LinkedIn
             </a>
           </li>
@@ -222,7 +256,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </ul>
     </div>
 </nav>
-<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -282,14 +316,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
   </ul>
-<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Teste de Hipóteses - Parte 1</span></h1>
+<h1 class="title"><span class="chapter-title">Teste de Hipóteses - Parte 1</span></h1>
 </div>
 
 
@@ -302,7 +336,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
   
 
+
 </header>
+
 
 <p><img src="Cadernos Grupo Python/Teste de Hipóteses - Parte 1/inicio.jpg" class="img-fluid"></p>
 <p>Na teoria de estimação, vimos que é possível, por meio de estatísticas amostrais adequadas, estimar parâmetros de uma população, dentro de um certo intervalo de confiança. Nos testes de hipóteses, em vez de se construir um intervalo de confiança no qual se espera que o parâmetro da população esteja contido, testa-se a validade de uma afirmação sobre um parâmetro da população. Então, em um teste de hipótese, procura-se tomar decisões a respeito de uma população com base em informações obtidas de uma amostra dessa população.</p>
@@ -325,7 +361,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Alguns exemplos são:</p>
 <p><span class="math inline">\(H_{0} : µ = 6\space\space\space\space\ H_{0} : p = 0,5\space\space\space\space\space\ H_{0} : σ² = 25\)</span></p>
 <p>O procedimento de teste de hipótese resultará em uma regra de decisão que nos permitirá rejeitar ou não rejeitar <span class="math inline">\(H_{0}\)</span>. A hipótese alternativa, representada por <span class="math inline">\(H_{1}\)</span>, é a hipótese que devemos considerar no caso de rejeição da hipótese nula. A forma mais geral de <span class="math inline">\(H_{1}\)</span> é a hipótese bilateral.</p>
-<p><span class="math inline">\(H_{1} : θ \neq θ_{0}\)</span></p>
+<p><span class="math inline">\(H_{1} : θ \neq  θ_{0}\)</span></p>
 <p>Em algumas situações, podemos ter informação que nos permita restringir o domínio da hipótese alternativa.Temos, então, hipóteses unilaterais à esquerda</p>
 <p><span class="math inline">\(H_{1} : θ &lt; θ_{0}\)</span></p>
 <p>e hipóteses unilaterais à direita:</p>
@@ -335,7 +371,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="exemplos">Exemplos</h2>
 <p><strong>Exemplo 1</strong>: Uma revista X afirmou que o tempo de produção de parafusos de uma máquina da empresa Y é em <code>média de 2 horas</code>. Deseja-se saber se essa afirmação é verdadeira.</p>
 <p>Hipótese Nula: <span class="math inline">\(H_{0} : \mu = 2\)</span></p>
-<p>Hipótese Alternativa: <span class="math inline">\(H_{1} : \mu\neq 2\)</span></p>
+<p>Hipótese Alternativa: <span class="math inline">\(H_{1} : \mu\neq  2\)</span></p>
 <p><strong>Exemplo 2</strong>: Uma empresa afirma que seus funcionários da área de TI possuem idade média <code>maior que 40 anos</code>. Desaja-se saber se essa afirmação é verdadeira.</p>
 <p>Hipótese Nula: <span class="math inline">\(H_{0} : \mu = 40\)</span></p>
 <p>Hipótese Alternativa: <span class="math inline">\(H_{1} : \mu &gt; 40\)</span></p>
@@ -355,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="nível-de-significância" class="level1">
 <h1>Nível de Significância</h1>
 <p>Definimos como nível de significância de um teste (geralmente denotado pela letra grega α) a probabilidade do erro tipo 1, ou seja,</p>
-<p><span class="math inline">\(α \text{ = P(erro I) = P(rejeitar } H_0 | H_0 \text{ é verdadeiro).}\)</span></p>
+<p><span class="math inline">\(α \text{ = P(erro I) = P(rejeitar } H_0  | H_0 \text{ é verdadeiro).}\)</span></p>
 <p>Em geral é escolhido um dos seguintes valores para α: 1%, 5% e 10%.</p>
 </section>
 <section id="p---valor" class="level1">
@@ -369,8 +405,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="Cadernos Grupo Python/Teste de Hipóteses - Parte 1/valorp.png" class="img-fluid"></p>
 <p>Graças a diversidade de testes disponíveis, esses testes estatísticos podem ser classificados em dois grupos distintos:</p>
 <ul>
-<li><p><strong>Testes Paramétricos</strong>: testes realizados partindo do pressuposto que a população segue uma distribuição normal.</p></li>
-<li><p><strong>Testes Não Paramétricos</strong>: testes que não precisam partir do pressuposto da normalidade.</p></li>
+<li><p><strong>Testes Paramétricos</strong>: testes realizados partindo do pressuposto que a população segue uma distribuição específica (Ex: Normal).</p></li>
+<li><p><strong>Testes Não Paramétricos</strong>: testes que não precisam partir do pressuposto de uma distribuição específica (Ex: Normal).</p></li>
 </ul>
 <p>A seguir serão apresentados alguns testes estatísticos <strong>paramétricos</strong> para 1 e 2 populações independentes.</p>
 </section>
@@ -389,8 +425,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Após a definição das hipóteses e da estatística de teste, temos que o p-valor é calculado por:</p>
 <ul>
 <li><p>Se <span class="math inline">\(H_{1}: \mu \neq \mu_{0}\)</span>: <span class="math inline">\(p-valor = P (T &gt; T_{obs}\mid H_{0})\)</span></p></li>
-<li><p>Se <span class="math inline">\(H_{1}: \mu &gt; \mu_{0}\)</span> <span class="math inline">\(p-valor = P (T &gt; T_{obs}\mid H_{0})\)</span></p></li>
-<li><p><span class="math inline">\(H_{1}: \mu &lt; \mu_{0}\)</span> <span class="math inline">\(p-valor = P (T &lt; T_{obs}\mid H_{0})\)</span></p></li>
+<li><p>Se <span class="math inline">\(H_{1}: \mu  &gt; \mu_{0}\)</span> <span class="math inline">\(p-valor = P (T &gt; T_{obs}\mid H_{0})\)</span></p></li>
+<li><p><span class="math inline">\(H_{1}: \mu  &lt; \mu_{0}\)</span> <span class="math inline">\(p-valor = P (T &lt; T_{obs}\mid H_{0})\)</span></p></li>
 </ul>
 <p>onde</p>
 <p><span class="math inline">\(T_{obs} = \frac{\bar{X}-\mu_{0}}{\frac{S}{\sqrt{n}}}\)</span></p>
@@ -399,7 +435,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>a</code> : a amostra observada.</li>
 <li><code>popmean</code> : valor associado a <span class="math inline">\(\mu_{0}\)</span> nas hipóteses.</li>
 </ul>
-<p><strong>Nota-se que essa função não possui nenhum argumento de entrada que indique o tipo da hipótese alternativa (unilateral ou bilateral) que será utilizada. Logo, tem-se que essa função retorna apenas o valor do <span class="math inline">\(T_{obs}\)</span> e o p-valor do teste bilateral. Dessa forma, só podem ser aplicados testes cuja hipótese nula seja</strong> <span class="math inline">\(\mu \neq \mu_{0}\)</span>.</p>
+<p><strong>Nota-se que essa função não possui nenhum argumento de entrada que indique o tipo da hipótese alternativa (unilateral ou bilateral) que será utilizada. Logo, tem-se que essa função retorna apenas o valor do</strong> <span class="math inline">\(T_{obs}\)</span> e o p-valor do teste bilateral. Dessa forma, só podem ser aplicados testes cuja hipótese nula seja <span class="math inline">\(\mu \neq \mu_{0}\)</span>.</p>
 <p>Como na biblioteca <strong>statsmodels</strong> não há função para a utilização das hipóteses unilaterais, iremos também criar a função <code>ttest_uni</code> que retorna o valor de <span class="math inline">\(T_{obs}\)</span> e o p-valor, e possui como argumentos de entrada:</p>
 <ul>
 <li><code>amostra</code>: amostra observada.</li>
@@ -422,7 +458,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -586,7 +622,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -754,7 +790,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -931,7 +967,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1102,7 +1138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>De posse de uma grande amostra aleatória simples <span class="math inline">\(X1, X2,…,Xn\)</span> extraída de uma população <span class="math inline">\(X ∼ Ber(p)\)</span>, nosso interesse está em testar a hipótese nula</p>
 <p><span class="math inline">\(H_{0} : p = p_{0}\)</span></p>
 <p>a um nível de significância α, onde <span class="math inline">\(p_0 \in (0,1)\)</span>. E <span class="math inline">\(p\)</span> se trata da proporção de elementos de uma população que possuem determinada característica de interesse para o experimento. Dependendo do conhecimento sobre o problema, a hipótese alternativa pode tomar uma das três formas:</p>
-<p><span class="math inline">\(H_{1} : p &lt; ou &gt; ou \neq p_{0}\)</span></p>
+<p><span class="math inline">\(H_{1} : p &lt;  ou  &gt;  ou  \neq p_{0}\)</span></p>
 <p>Em qualquer dos casos, a estatística de teste baseia-se na proporção amostral; para grandes amostras, sabemos que</p>
 <p><span class="math inline">\(Z = \frac{\hat{p}-p}{\sqrt{\frac{p\left ( 1-p \right )}{n}}} \sim N(0,1)\)</span></p>
 <p>Após as definições das hipóteses e da estatística de teste, temos que o p-valor é calculado por:</p>
@@ -1137,7 +1173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1315,7 +1351,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1491,7 +1527,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1663,7 +1699,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>E suponha que estamos interessados em testar as hipóteses</p>
 <p><span class="math inline">\(H_{o}: \sigma^{2} = \sigma^{2}_{0}\)</span></p>
 <p>vs</p>
-<p><span class="math inline">\(H_{1}: \sigma^{2} &lt; ou &gt; ou \neq \sigma^{2}_{0}\)</span>,</p>
+<p><span class="math inline">\(H_{1}: \sigma^{2} &lt; ou  &gt; ou \neq \sigma^{2}_{0}\)</span>,</p>
 <p>onde <span class="math inline">\(σ_{0}^{2}\)</span> &gt; 0.</p>
 <p>Em qualquer dos casos, a estatística de teste Q é dada por:</p>
 <p><span class="math inline">\(Q = \frac{(n-1)S^{2}}{\sigma^{2}}\sim \chi^{2}_{(n-1)}\)</span></p>
@@ -1752,7 +1788,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -1953,7 +1989,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -2019,7 +2055,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="exemplo-1-3">Exemplo 1</h3>
 <p>Deseja-se avaliar se no período de 2007 a 2011, a proporção de <strong>filmes de Comédia</strong> lançados no cinema foi <code>igual</code> a proporção de <strong>filmes de Aventura</strong>, utilizando um nível de significância de <code>5%</code>.</p>
 <p>As hipóteses serão as seguintes:</p>
-<p><span class="math inline">\(H_{0} : p_{X} - p_{Y} = 0\)</span></p>
+<p><span class="math inline">\(H_{0} : p_{X} - p_{Y}  = 0\)</span></p>
 <p>vs</p>
 <p><span class="math inline">\(H_{1} : p_{X} - p_{Y}\neq 0\)</span></p>
 <p>Onde X ão filmes do gênero <code>Comédia</code> e Y, os filmes do gênero <code>Aventura</code>.</p>
@@ -2029,7 +2065,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -2120,7 +2156,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="exemplo-2-3">Exemplo 2</h3>
 <p>Baseado no resultado do exemplo anterior, sabe-se que as proporções de filmes de comédia e aventura em 2007-2011 são consideradas diferentes. Então, através disso, deseja-se avaliar se a proporção de <strong>filmes de Comédia</strong> é <code>maior</code> que a proporção de <strong>filmes de Aventura</strong> lançados nos cinemas em 2007-2011, utilizando um nível de significância de <code>1%</code>.</p>
 <p>As hipóteses serão as seguintes:</p>
-<p><span class="math inline">\(H_{0} : p_{X} - p_{Y} = 0\)</span></p>
+<p><span class="math inline">\(H_{0} : p_{X} - p_{Y}  = 0\)</span></p>
 <p>vs</p>
 <p><span class="math inline">\(H_{1} : p_{X} - p_{Y} &gt; 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{1} : p_{X} &gt; p_{Y}\)</span></p>
 <p>Onde X são filmes do gênero <code>Comédia</code> e Y, os filmes do gênero <code>Aventura</code>.</p>
@@ -2231,7 +2267,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="exemplo-1-4">Exemplo 1</h3>
 <p>Queremos avaliar se a média dos orçamentos dos filmes de <strong>Ação e Aventura</strong> são <code>iguais</code>, ao nível de significância de <code>5%</code>:</p>
 <p>As hipóteses serão as seguintes:</p>
-<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y} = 0\)</span></p>
+<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y}  = 0\)</span></p>
 <p>vs</p>
 <p><span class="math inline">\(H_{1} : \mu_{X} - \mu_{Y}\neq 0\)</span></p>
 <p>Onde X são os orçamentos dos filmes de <code>Ação</code> e Y, os orçamentos dos filmes de <code>Aventura</code>.</p>
@@ -2265,7 +2301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="exemplo-2-4">Exemplo 2</h3>
 <p>A revista “The Hollywood Reporter” afirmou que a média dos orçamentos dos filmes de <strong>Ação</strong> é <code>superior</code> à média dos orçamentos dos filmes de <strong>Comédia</strong>. Deseja-se avaliar a veracidade dessa informação, ao nível de significância de <code>5%</code>.</p>
 <p>As hipóteses serão as seguintes:</p>
-<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y} = 0\)</span></p>
+<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y}  = 0\)</span></p>
 <p>vs</p>
 <p><span class="math inline">\(H_{1} : \mu_{X} - \mu_{Y}\ &gt; 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{1} : \mu_{X} &gt; \mu_{Y}\)</span></p>
 <p>Onde X são os orçamentos dos filmes de <code>Ação</code> e Y, os orçamentos dos filmes de <code>Comédia</code>.</p>
@@ -2274,7 +2310,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -2400,7 +2436,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -2484,7 +2520,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="exemplo-1-5">Exemplo 1</h3>
 <p>Um experimento foi realizado com moradores de diversas ilhas, onde foi possível testar os efeitos de remédios ansiolíticos no uso da memória. Sabendo que os tempos dos testes de memória, antes e depois, dos moradores expostos ao medicamento <code>A</code> seguem uma distribuição normal com média e variância desconhecidas, deseja-se avaliar se a droga <code>A</code> afeta o uso da memória, seja positivamente ou negativamente, observando a diferença do tempo do teste de memória antes e depois da exposição ao medicamento, ao nível de significância de <code>5%</code>.</p>
 <p>As hipótetes serão as seguintes:</p>
-<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y} = 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{0} : \mu_{D} = 0\)</span></p>
+<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y}  = 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{0} : \mu_{D}  = 0\)</span></p>
 <p>vs</p>
 <p><span class="math inline">\(H_{1} : \mu_{X} - \mu_{Y} \neq 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{1} : \mu_{D} \neq 0\)</span></p>
 <p>Onde D é a diferença entre o tempo de resposta do teste depois (X) e antes (Y) do uso da droga <code>A</code>.</p>
@@ -2493,7 +2529,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div style="overflow-x:auto">
 
 
-<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
+<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -2582,7 +2618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="exemplo-2-5">Exemplo 2</h3>
 <p>Dado que no exemplo anterior as médias dos tempos foram considerados diferentes, iremos avaliar se a droga <strong>A</strong> afeta o uso da memória <code>positivamente</code>, ao nível de significância de <code>1%</code>.</p>
 <p>As hipótetes serão as seguintes:</p>
-<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y} = 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{0} : \mu_{D} = 0\)</span></p>
+<p><span class="math inline">\(H_{0} : \mu_{X} - \mu_{Y}  = 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{0} : \mu_{D}  = 0\)</span></p>
 <p>vs</p>
 <p><span class="math inline">\(H_{1} : \mu_{X} - \mu_{Y} &gt; 0\)</span> <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(H_{1} : \mu_{D} &gt; 0\)</span></p>
 <p>Onde D é a diferença entre o tempo de resposta do teste depois (X) e antes (Y) do uso da droga <code>A</code>.</p>
@@ -2652,6 +2688,33 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       }
     }
   }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
   const toggleColorMode = (alternate) => {
     // Switch the stylesheets
     const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
@@ -2718,13 +2781,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return localAlternateSentinel;
     }
   }
-  let localAlternateSentinel = 'default';
+  const darkModeDefault = true;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
   // Dark / light mode switch
   window.quartoToggleColorScheme = () => {
     // Read the current dark / light value 
     let toAlternate = !hasAlternateSentinel();
     toggleColorMode(toAlternate);
     setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
   };
   // Ensure there is a toggle, if there isn't float one in the top right
   if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
@@ -2759,18 +2824,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -2802,11 +2856,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -2816,8 +2909,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -2829,7 +2931,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -2873,6 +3098,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -2898,6 +3124,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -2959,12 +3211,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./EstimativaPorIntervalos.html" class="pagination-link">
+      <a href="./EstimativaPorIntervalos.html" class="pagination-link" aria-label="Estimativa por Intervalos">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Estimativa por Intervalos</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./TesteDeHipotesesParte2.html" class="pagination-link">
+      <a href="./TesteDeHipotesesParte2.html" class="pagination-link" aria-label="Teste de Hipóteses - Parte 2">
         <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Teste de Hipóteses - Parte 2</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
@@ -2972,15 +3224,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Criação: Maqueise Pinheiro e Thaís Machado. <br> Orientação: Douglas Rodrigues (UFF) e Karina Yaginuma (UFF). <br> Colaboradores: Gabriel Miranda e Thiago Augusto.</div>   
+    <div class="nav-footer-left">
+<p>Criação: Maqueise Pinheiro e Thaís Machado. <br> Orientação: Douglas Rodrigues (UFF) e Karina Yaginuma (UFF). <br> Colaboradores: Gabriel Miranda e Thiago Augusto.</p>
+</div>   
     <div class="nav-footer-center">
       &nbsp;
-    </div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>
   </div>
 </footer>
+
 
 
 

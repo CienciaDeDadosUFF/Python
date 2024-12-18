@@ -36,8 +36,8 @@ book:
 format:
   html:
     theme:
-      light: flatly
       dark: darkly
+      light: flatly
   pdf:
     documentclass: scrreprt
 
