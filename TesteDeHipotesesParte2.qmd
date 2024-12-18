@@ -13,7 +13,7 @@ jupyter: python3
 
 # Importação
 
-```python
+``` python
 import statsmodels.stats as sm
 from statsmodels.stats.weightstats import ztest
 import scipy.stats as ss
@@ -29,8 +29,8 @@ from scipy.stats import chi2_contingency
 
 # Inferência sobre Três ou mais Populações
 
-
 # Teste de Levene
+
 Teste de Levene é usado para testar se k amostras foram coletadas de populações que possuem mesma variância. As hipóteses do teste são:
 
 `(?)`
@@ -43,7 +43,7 @@ Ou seja, igualdade entre as variâncias populacionais contra a alternativa de qu
 
 $L = \frac{(n-k)\sum_{i=1}^{k}n_{i}(\bar{Z_{i.}}-\bar{Z_{..}})^{2}}{(k-1)\sum_{i=1}^{k}\sum_{j=1}^{n_{i}}(Z_{ij}-\bar{Z_{i.}})^{2}} \sim F_{k-1,n-k}$
 
-em que 
+em que
 
 `(?)`
 
@@ -63,8 +63,8 @@ $p-valor= P(F>L_{obs}\mid H_{0})$
 
 Para aplicarmos o teste de Levene, utilizamos a função `levene` da biblioteca Scipy, cujos argumentos de entrada são:
 
-* `sample1`, `sample2`, … : amostras observadas.
-* `center`: há três opções: “mean”, “median” ou “trimmed”. Para o caso da população seguir uma normal, utilize “mean”.
+-   `sample1`, `sample2`, … : amostras observadas.
+-   `center`: há três opções: “mean”, “median” ou “trimmed”. Para o caso da população seguir uma normal, utilize “mean”.
 
 Para mais informações clique aqui para acessar a documentação da função.
 
@@ -72,7 +72,7 @@ Como a maioria das funções, essa retorna o valor da estatística de teste e o 
 
 Para aplicação do teste utilizaremos o banco de dados de uma amostra aleatória simples de avaliações de filmes do site Rotten Tomatoes. Vamos supor que os dados são provenientes de distribuições normais.
 
-```python
+``` python
 df = pd.read_csv('Movie-Ratings.csv')
 df.head()
 ```
@@ -139,8 +139,8 @@ df.head()
   </tbody>
 </table>
 ```
+## Exemplo
 
-## Exemplo 
 Deseja-se saber se a variabilidade das notas dos críticos do site Rotten Tomatoes são `iguais` nos filmes dos gêneros **Comédia, Ação, Aventura e Drama**, ao nível de significância de `5%`.
 
 `(?)`
@@ -149,18 +149,19 @@ vs
 
 `(?)`
 
-```python
+``` python
 df_acao, df_adventure, df_comedia, df_drama = df[df["Genre"] == 'Action'], df[df["Genre"] == 'Adventure'], df[df["Genre"] == "Comedy"], df[df["Genre"]=="Drama"]
 ss.levene(df_acao['Rotten Tomatoes Ratings %'],df_adventure['Rotten Tomatoes Ratings %'], df_drama['Rotten Tomatoes Ratings %'], df_comedia['Rotten Tomatoes Ratings %'], center="mean")
 ```
 
-::: {.callout}
-  LeveneResult(statistic=1.6923208903592077, pvalue=0.16786851919967521)
+::: callout
+LeveneResult(statistic=1.6923208903592077, pvalue=0.16786851919967521)
 :::
 
 Como p-valor=0.16 é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, há evidências de que as variâncias das avaliações dos filmes dos gêneros Comédia, Ação, Drama e Aventura são iguais.
 
 # Teste One-Way ANOVA
+
 A One-Way ANOVA é usada para testar diferenças entre médias de pelo menos três populações, uma vez que a comparação entre dois grupos pode ser obtida através do teste t. Assim como no caso do teste t, o modelo da ANOVA exige que as populações possuam distribuição Normal e, além disso, as variâncias devem ser **iguais**. Considere que são extraídas amostras aleatórias simples de tamanhos $n_{1},n_{2},\ldots,n{k}$ dessas populações. A hipótese de interesse é
 
 $H_{0} : \mu_{1} = \mu_{2} = \ldots = \mu_{k}$
@@ -189,13 +190,13 @@ $p-valor= P(F>F_{obs}\mid H_{0})$
 
 Para aplicarmos o teste One Way ANOVA utilizamos a função `f_oneway` da biblioteca **Scipy**, cujos argumentos de entrada são apenas:
 
-* `sample1`, `sample2`, … : amostras observadas.
+-   `sample1`, `sample2`, … : amostras observadas.
 
 Para mais informações clique aqui para acessar a documentação da função.
 
 Vamos exemplificar a utilização do teste com o banco de dados de avaliações de filmes.
 
-## Exemplo 
+## Exemplo
 
 Deseja-se verificar se as médias dos avaliações do site Rotten Tomatoes são `iguais` para os filmes de **Ação, Comédia, Drama e Aventura**, utilizando um nível de significância de `5%`.
 
@@ -207,12 +208,12 @@ $H_{1} : \mu_{i} \neq \mu_{j}$ para algum $i \neq j, \space\space\space    onde 
 
 Primeiro passo a ser realizado é verificar se as variâncias são iguais, aplicando o Teste de Levene. Logo, através da aplicação no exemplo anterior, temos que as variâncias são consideradas **iguais**. Agora realizaremos o teste de ANOVA.
 
-```python
+``` python
 ss.f_oneway(df_acao['Rotten Tomatoes Ratings %'],df_adventure['Rotten Tomatoes Ratings %'],df_drama['Rotten Tomatoes Ratings %'], df_comedia['Rotten Tomatoes Ratings %'])
 ```
 
-::: {.callout}
-  F_onewayResult(statistic=6.039948218319176, pvalue=0.0004869684243719264)
+::: callout
+F_onewayResult(statistic=6.039948218319176, pvalue=0.0004869684243719264)
 :::
 
 Como p-valor é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja, pelo menos uma das médias é considerada diferente. Para saber quais médias são diferentes, realize um teste de comparações múltiplas.
@@ -229,7 +230,7 @@ $H_{1}$ : os dados não são provenientes de uma distribuição Normal.
 
 Para realizar o teste de Shapiro-Wilk utilizamos a função `shapiro` da biblioteca Scipy, cujo único argumento de entrada é:
 
-* x : a amostra observada.
+-   x : a amostra observada.
 
 Para mais informações clique aqui para acessar a documentação da função.
 
@@ -237,12 +238,12 @@ Para mais informações clique aqui para acessar a documentação da função.
 
 Deseja-se saber se as avaliações da audiência constada no site Rotten Tomatoes para os filmes de **Aventura** são provenientes de uma `distribuição normal`, utilizando um nível de significância de `5%`.
 
-```python
+``` python
 ss.shapiro(df_adventure['Audience Ratings %'])
 ```
 
-::: {.callout}
-  (0.9456037282943726, 0.14058126509189606)
+::: callout
+(0.9456037282943726, 0.14058126509189606)
 :::
 
 Como p-valor=0.14 é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, podemos afirmar que a amostra é proveniente de uma população com distribuição normal.
@@ -267,16 +268,16 @@ $H_{1}$ : as duas amostram não seguem a mesma distribuição
 
 Para realizar o teste de Kolmogorov-Smirnov para uma amostra utilizamos a função `kstest` da biblioteca **Scipy**, cujos argumentos de entrada são:
 
-* `rvs`: a amostra observada.
-* `cdf`: o nome da distribuição: “norm”,”expon”, …
-* `args`: parâmetros da distribuição.
+-   `rvs`: a amostra observada.
+-   `cdf`: o nome da distribuição: “norm”,”expon”, …
+-   `args`: parâmetros da distribuição.
 
 Para mais informações sobre essa função clique aqui.
 
 Para realizar o teste de Kolmogorov-Smirnov para duas amostras utilizamos a função `ks_2sample` da biblioteca Scipy, cujos argumentos principais são:
 
-* data1: primeira amostra observada.
-* data2: segunda amostra observada.
+-   data1: primeira amostra observada.
+-   data2: segunda amostra observada.
 
 E sobre essa função, clique aqui.
 
@@ -292,7 +293,7 @@ vs
 
 $H_{1}$: os dados não seguem uma distribuição normal
 
-```python
+``` python
 df_horror = df[df["Genre"] == 'Horror']
 df_horror.head()
 ```
@@ -359,13 +360,12 @@ df_horror.head()
   </tbody>
 </table>
 ```
-
-```python
+``` python
 ss.kstest(df_horror['Audience Ratings %'], "norm", args=[np.mean(df_horror['Audience Ratings %']),np.std(df_horror['Audience Ratings %'])])
 ```
 
-::: {.callout}
-  KstestResult(statistic=0.05351444278807435, pvalue=0.9989829445848811)
+::: callout
+KstestResult(statistic=0.05351444278807435, pvalue=0.9989829445848811)
 :::
 
 Como p-valor = 0.99 é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, há evidências de que os dados são provenientes de uma normal.
@@ -392,7 +392,7 @@ $H_{0} : p_{1} = p_{1,A} \ , \ p_{2} = p_{2,A} \ , \ p_{3} = p_{3,A} \ … \ p_{
 
 vs
 
-$H_{1} : p_{i} \neq p_{i,A} \ , \$, para pelo menos um $i \ , \ i = 1, 2, 3, …, k$
+\$H\_{1} : p\_{i} \neq p\_{i,A}  , \$, para pelo menos um $i \ , \ i = 1, 2, 3, …, k$
 
 Onde $p_{i,A}; i = 1, 2, · · · , k$ são as proporções da hipótese nula, que devem satisfazer $\sum\limits_{i = 1}^k p_{i,A} = 1$
 
@@ -402,92 +402,84 @@ $X^2 = \sum_{i = 1}^{k}\frac{(o_{i} - e_{i})^2}{e_{i}} \sim X^2_{k-1}$
 
 Onde:
 
-* $o_{i}$: é o número de vezes que a categoria $i$ é observada na amostra
-* $e_{i}$: valor esperado; obtido pela multiplicação do tamanho da amostra com $p_{i}$
+-   $o_{i}$: é o número de vezes que a categoria $i$ é observada na amostra
+-   $e_{i}$: valor esperado; obtido pela multiplicação do tamanho da amostra com $p_{i}$
 
 E o p-valor é calculado da seguinte forma:
 
 Para o teste de Aderência usaremos a função `chisquare` da biblioteca **Scipy**, cujos argumentos de entrada são
 
-* `f_obs`: amostra observada
-* `f_exp`: valores esperados, sob $H_{0}$
+-   `f_obs`: amostra observada
+-   `f_exp`: valores esperados, sob $H_{0}$
 
 Para mais informações sobre a função clique aqui para acessar sua documentação.
 
 ### Exemplo
+
 Deseja-se verificar se a proporção de filmes de **Aventura**, **Romance** e **Suspense** avaliados são, respectivamente, `0.26`, `0.29`, `0.45`, ao nível de significância de `5%`.
 
 $H_{0} : p_{1} = 0.26 \ , \ p_{2} = 0.29 \ , \ p_{3} = 0.45$
 
 vs
 
-$H_{1} : p_{i} \neq p_{i,A} \ , \$, para pelo menos um $i \ , \ i = 1, 2, 3$
+\$H\_{1} : p\_{i} \neq p\_{i,A}  , \$, para pelo menos um $i \ , \ i = 1, 2, 3$
 
 Obtendo os valores observados:
 
-```python
+``` python
 tabela_freq = df.Genre.value_counts()
 tabela_freq
 ```
 
-:::{.callout}
-  Comedy       172
-  Action       154
-  Drama        101
-  Horror        49
-  Thriller      36
-  Adventure     29
-  Romance       21
-  Name: Genre, dtype: int64
+::: callout
+Comedy 172 Action 154 Drama 101 Horror 49 Thriller 36 Adventure 29 Romance 21 Name: Genre, dtype: int64
 :::
 
 Aplicando a função:
 
-```python
+``` python
 obs = [tabela_freq[5], tabela_freq[6], tabela_freq[4]]
 total_obs = sum(obs)
 
 chisquare(f_obs = obs, f_exp = [0.26*total_obs, 0.29*total_obs, 0.45*total_obs])
 ```
 
-:::{.callout}
-  Power_divergenceResult(statistic=2.782616741718586, pvalue=0.24874963485619836)
+::: callout
+Power_divergenceResult(statistic=2.782616741718586, pvalue=0.24874963485619836)
 :::
 
 Como p-valor=0.25 é maior que o nível de significância proposto, não rejeitamos a hipótese nula, ou seja, podemos afirmar que a proporção de filmes de Aventura, Romance e Suspense avaliados são respectivamente de 0.26,0.29 e 0.45.
 
-
 ## Teste de Homogeneidade
+
 Esse caso é similar ao teste de Aderência, com a diferença de que agora será avaliado o comportamento, em C populações **independentes**, de uma variável categórica que pode assumir L valores.
 
 Para este teste, teremos as seguintes hipóteses:
 
 $H_{0} : p_{1, 1} = p_{1, 2} = … = p_{1, C} \ ; \ p_{2, 1} = p_{2, 2} = … = p_{2, C} \ ; \ \ … \ \ ; \ p_{L, 1} = p_{L, 2} = … = p_{L, C}$
 
-
 vs
 
 $H_{1} :$ pelo menos uma das igualdades não é valida
 
-Para  temos que:
+Para temos que:
 
 $X^2 = \sum_{i = 1}^{L}\sum_{j = 1}^{C}\frac{(o_{ij - e_{ij}})^2}{e_{ij}} \sim X^2_{(L - 1)*(C - 1)}$
 
 Onde:
 
-* $o_{ij} :$ número de vezes que na amostra da população $i$ a categoria $j$ é observada.
-* $e_{ij} :$ valor esperado na população e na categoria $j$
+-   $o_{ij} :$ número de vezes que na amostra da população $i$ a categoria $j$ é observada.
+-   $e_{ij} :$ valor esperado na população e na categoria $j$
 
 E o p-valor é calculado da seguinte forma:
 
 Para o teste de Homogeneidade usaremos a função `chi2_contingency` da biblioteca **Scipy**, cujo argumento de entrada é
 
-* `observed`: tabela de contingência
+-   `observed`: tabela de contingência
 
 ### Exemplo
 
 Com o intuito de saber a eficacia da quimioterapia para dois diferentes tipos de câncer, um médico selecionou de maneira aleatória 100 pacientes com o câncer do Tipo I e 100 com o Tipo II, e dispôs os resultados na tabela abaixo. Verifique se existe relação entre a eficacia da quimioterapia e o tipo de câncer, ao nível de significância de `5%`.
-
 
 ```{=html}
 <table class="table-striped table-bordered table-sm">
@@ -525,27 +517,27 @@ Com o intuito de saber a eficacia da quimioterapia para dois diferentes tipos de
 
 </table>
 ```
-
-```python
+``` python
 tabela_cancer = np.array([51, 33, 16, 58, 29, 13]).reshape(2,3)
 tabela_cancer
 ```
 
-:::{.callout}
-  array([[51, 33, 16],[58, 29, 13]])
+::: callout
+array(\[\[51, 33, 16\],\[58, 29, 13\]\])
 :::
 
-```python
+``` python
 chi2_contingency(tabela_cancer)
 ```
 
-:::{.callout}
-  (1.0179506281189088, 0.6011112135514984, 2, array([[54.5, 31. , 14.5],[54.5, 31. , 14.5]]))
+::: callout
+(1.0179506281189088, 0.6011112135514984, 2, array(\[\[54.5, 31. , 14.5\],\[54.5, 31. , 14.5\]\]))
 :::
 
 Como p-valor = 0.6011 é maior que o nível de significância, não rejeitamos a hipótese nula. Ou seja, há evidências de que o efeito da quimioterapia é igual para os dois tipos de câncer observados.
 
 ## Teste de Independência
+
 Agora considere que cada indivíduo da amostra será classificado conforme duas variáveis qualitativas. Em comparação ao teste de Homogeneidade, e simplificando o entendimento, ao invés de L populações, teremos uma população que pode ser classificada de Lformas diferentes.
 
 Para este teste teremos as seguintes hipóteses:
@@ -558,7 +550,7 @@ $H_{1} :$ pelo menos uma das igualdades não é valida
 
 Onde $p_{i\bigcap j}$ é a probabilidade do indivíduo ser classificado como $i$ e $j$ simultaneamente e $p_{i.}$ e $p_{.j}$ as probabilidades dos indivíduos serem classificados como $i$ ou $j$ de forma separada, respectivamente.
 
-Para  e sob  temos que:
+Para e sob temos que:
 
 $X^2 = \sum_{i = 1}^{L}\sum_{j = 1}^{C}\frac{(o_{ij - e_{ij}})^2}{e_{ij}} \sim X^2_{(L - 1)*(C - 1)}$
 
@@ -606,33 +598,32 @@ Agora, o médico gostaria de avaliar se a reação à quimioterapia independe do
 </tbody>
 </table>
 ```
-
-```python
+``` python
 tabela_cancer = np.array([38, 32, 30, 26, 38, 16]).reshape(2,3)
 tabela_cancer
 ```
 
-:::{.callout}
-  array([[38, 32, 30],[26, 38, 16]])
+::: callout
+array(\[\[38, 32, 30\],\[26, 38, 16\]\])
 :::
 
-```python
+``` python
 chi2_contingency(tabela_cancer)
 ```
 
-:::{.callout}
-  (4.862969720496892, 0.08790620719349594, 2, array([[35.55555556, 38.88888889, 25.55555556], [28.44444444, 31.11111111, 20.44444444]]))
+::: callout
+(4.862969720496892, 0.08790620719349594, 2, array(\[\[35.55555556, 38.88888889, 25.55555556\], \[28.44444444, 31.11111111, 20.44444444\]\]))
 :::
 
 Como p-valor = 0.0879 é maior que o nível de significância, não rejeitamos a hipótese nula. Ou seja, há evidências de que “Tipo de câncer” e “Eficacia da quimioterapia” são variáveis independentes.
 
 # Referências
 
-* Casella, G. e Berger, R. L. **Inferência estatística**. Cengage Learning, 2010.
-* Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) **SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python.** Nature Methods, in press.
-* Seabold, Skipper, and Josef Perktold. **“statsmodels: Econometric and statistical modeling with python.”** Proceedings of the 9th Python in Science Conference, 2010.
-* Stéfan van der Walt, S. Chris Colbert and Gaël Varoquaux. **The NumPy Array: A Structure for Efficient Numerical Computation, Computing in Science & Engineering**, 2011.
-* John D. Hunter. **Matplotlib: A 2D Graphics Environment, Computing in Science & Engineering**, 2007.
-* Wes McKinney. **Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science Conference**, 2010.
-* Velarde, L. G. C. CAVALIERE, Y. F. **Apostila Inferência Estatística. Departamento de Estatística**. Universidade Federal Fluminense
-* FARIAS, A. M. L. **Apostila de Estatística II**. Departamento de Estatística. 2017. Universidade Federal Fluminense.
+-   Casella, G. e Berger, R. L. **Inferência estatística**. Cengage Learning, 2010.
+-   Pauli Virtanen, Ralf Gommers, Travis E. Oliphant, Matt Haberland, Tyler Reddy, David Cournapeau, Evgeni Burovski, Pearu Peterson, Warren Weckesser, Jonathan Bright, Stéfan J. van der Walt, Matthew Brett, Joshua Wilson, K. Jarrod Millman, Nikolay Mayorov, Andrew R. J. Nelson, Eric Jones, Robert Kern, Eric Larson, CJ Carey, İlhan Polat, Yu Feng, Eric W. Moore, Jake VanderPlas, Denis Laxalde, Josef Perktold, Robert Cimrman, Ian Henriksen, E.A. Quintero, Charles R Harris, Anne M. Archibald, Antônio H. Ribeiro, Fabian Pedregosa, Paul van Mulbregt, and SciPy 1.0 Contributors. (2020) **SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python.** Nature Methods, in press.
+-   Seabold, Skipper, and Josef Perktold. **“statsmodels: Econometric and statistical modeling with python.”** Proceedings of the 9th Python in Science Conference, 2010.
+-   Stéfan van der Walt, S. Chris Colbert and Gaël Varoquaux. **The NumPy Array: A Structure for Efficient Numerical Computation, Computing in Science & Engineering**, 2011.
+-   John D. Hunter. **Matplotlib: A 2D Graphics Environment, Computing in Science & Engineering**, 2007.
+-   Wes McKinney. **Data Structures for Statistical Computing in Python, Proceedings of the 9th Python in Science Conference**, 2010.
+-   Velarde, L. G. C. CAVALIERE, Y. F. **Apostila Inferência Estatística. Departamento de Estatística**. Universidade Federal Fluminense
+-   FARIAS, A. M. L. **Apostila de Estatística II**. Departamento de Estatística. 2017. Universidade Federal Fluminense.
