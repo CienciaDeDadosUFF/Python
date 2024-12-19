@@ -1,5 +1,6 @@
 project:
   type: book
+  output-dir: site
 
 book:
   title: "APRENDIZADO DE MÁQUINA COM PYTHON"
@@ -11,10 +12,9 @@ book:
   favicon: uff-brasao.jpg
   page-footer:
     left: |
-      Criação: Maqueise Pinheiro e Thaís Machado. <br>
       Orientação: Douglas Rodrigues (UFF) e Karina Yaginuma (UFF). <br>
-      Colaboradores: Gabriel Miranda e Thiago Augusto.
-  repo-url: https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io
+      Equipe atual: Gabriel Caetano, Guilherme Ceacero, Claudionor Ferreira e Fenício Porto.
+  repo-url: https://github.com/CienciaDeDadosUFF/python.github.io
   downloads: [pdf]
   #repo-actions: false #apenas se versão do quarto > 1.4 
   
