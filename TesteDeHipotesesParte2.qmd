@@ -383,7 +383,7 @@ $H_1: \exists \, i \ , \text{tal que} \, p_i \neq p_{i,A}, \, \text{com } i \in 
 
 Sob $H_{0}$:
 
-$\chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$
+$\chi^2 = \displaystyle\sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$
 
 Onde:
 
@@ -407,7 +407,7 @@ $H_{0} : p_{1} = 0.26 \\ , \\ p_{2} = 0.29 \\ , \\ p_{3} = 0.45$
 
 vs
 
-$H\\_{1} : p\\_{i} \\neq p\\_{i,A}  , \\$, para pelo menos um $i \\ , \\ i = 1, 2, 3$
+$H\\_{1} : p\\_{i} \neq p\\_{i,A}  , \\$, para pelo menos um $i \\ , \\ i = 1, 2, 3$
 
 Obtendo os valores observados:
 
@@ -447,7 +447,7 @@ $H_1: \exists \, i, j \ , \text{tais que} \, p_{i,j} \neq p_{i,A}, \, \text{com 
 
 Para $H_0$ temos que:
 
-$\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$
+$\chi^2 = \displaystyle\sum_{i=1}^r \displaystyle\sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$
 
 Onde:
 
@@ -521,19 +521,19 @@ Como p-valor = 0.6011 é maior que o nível de significância, não rejeitamos a
 
 ## Teste de Independência
 
-Agora considere que cada indivíduo da amostra será classificado conforme duas variáveis qualitativas. Em comparação ao teste de Homogeneidade, e simplificando o entendimento, ao invés de L populações, teremos uma população que pode ser classificada de Lformas diferentes.
+Agora considere que cada indivíduo da amostra será classificado conforme duas variáveis qualitativas. Em comparação ao teste de Homogeneidade, e simplificando o entendimento, ao invés de L populações, teremos uma população que pode ser classificada de L formas diferentes.
 
 Para este teste teremos as seguintes hipóteses:
 
-$H_{0} : p_{i\\bigcap j} = p_{i.}*p_{.j}$, para todo $i = 1, …, L$ e $j = 1, …, C$
+$H_{0} : p_{i, j} = p_{i,\cdot}\cdot p_{\cdot,j}$, para todo $i = 1, …, L$ e $j = 1, …, C$
 
-$H_1: \exists \, i, j \ , \text{tais que} \, p_{i,j} \neq p_{i,*} \cdot p_{*,j}, \, \text{com } i \in \{1, \dots, L\}, \, j \in \{1, \dots, C\}$
+$H_1: \exists \, i, j \ , \text{tais que} \, p_{i,j} \neq p_{i,\cdot} \cdot p_{\cdot,j}, \, \text{com } i \in \{1, \dots, L\}, \, j \in \{1, \dots, C\}$
 
-Onde $p_{i\\bigcap j}$ é a probabilidade do indivíduo ser classificado como $i$ e $j$ simultaneamente e $p_{i.}$ e $p_{.j}$ as probabilidades dos indivíduos serem classificados como $i$ ou $j$ de forma separada, respectivamente.
+Onde $p_{i,j}$ é a probabilidade do indivíduo ser classificado como $i$ e $j$ simultaneamente e $p_{i,\cdot}$ e $p_{\cdot,j}$ as probabilidades dos indivíduos serem classificados como $i$ ou $j$ de forma separada, respectivamente.
 
 sob $H_0$ temos que:
 
-$\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$
+$\chi^2 = \displaystyle\sum_{i=1}^r \displaystyle\sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$
 
 E o p-valor é calculado da seguinte forma:
 
