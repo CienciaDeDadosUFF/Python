@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.57">
+<meta name="generator" content="quarto-1.4.553">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Teste de Hipóteses - Parte 2 – APRENDIZADO DE MÁQUINA COM PYTHON</title>
+<title>APRENDIZADO DE MÁQUINA COM PYTHON - Teste de Hipóteses - Parte 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -105,7 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -143,13 +143,13 @@ window.Quarto = {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./TesteDeHipotesesParte2.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Teste de Hipóteses - Parte 2</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -163,26 +163,26 @@ window.Quarto = {
     <div class="sidebar-title mb-0 py-0">
       <a href="./">APRENDIZADO DE MÁQUINA COM PYTHON</a> 
         <div class="sidebar-tools-main tools-wide">
-    <a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="https://github.com/CienciaDeDadosUFF/python.github.io" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
     <a href="./APRENDIZADO-DE-MÁQUINA-COM-PYTHON.pdf" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
     <div class="dropdown">
-      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Share"><i class="bi bi-share"></i></a>
       <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
-              <i class="bi bi-twitter pe-1"></i>
+              <i class="bi bi-bi-twitter pe-1"></i>
             Twitter
             </a>
           </li>
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://www.facebook.com/sharer/sharer.php?u=|url|">
-              <i class="bi bi-facebook pe-1"></i>
+              <i class="bi bi-bi-facebook pe-1"></i>
             Facebook
             </a>
           </li>
           <li>
             <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
-              <i class="bi bi-linkedin pe-1"></i>
+              <i class="bi bi-bi-linkedin pe-1"></i>
             LinkedIn
             </a>
           </li>
@@ -298,7 +298,7 @@ window.Quarto = {
   </ul></li>
   <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/CienciaDeDadosUFF/python.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -343,20 +343,19 @@ window.Quarto = {
 <section id="teste-de-levene" class="level1">
 <h1>Teste de Levene</h1>
 <p>Teste de Levene é usado para testar se k amostras foram coletadas de populações que possuem mesma variância. As hipóteses do teste são:</p>
-<p><code>(?)</code></p>
-<p>vs</p>
-<p><code>(?)</code></p>
+<p><span class="math inline">\(H_0: \sigma_1^2 = \sigma_2^2 = \dots = \sigma_k^2\)</span></p>
+<p><span class="math inline">\(H_1: \exists \, i, j \ , \text{tal que} \, \sigma_i^2 \neq \sigma_j^2\)</span></p>
 <p>Ou seja, igualdade entre as variâncias populacionais contra a alternativa de que nem todas as variâncias são iguais. Ele é o teste mais robusto contra falta de normalidade dos dados e sua estatística de teste segue com uma distribuição F sob <span class="math inline">\(H_{0}\)</span>:</p>
-<p><span class="math inline">\(L = \frac{(n-k)\sum_{i=1}^{k}n_{i}(\bar{Z_{i.}}-\bar{Z_{..}})^{2}}{(k-1)\sum_{i=1}^{k}\sum_{j=1}^{n_{i}}(Z_{ij}-\bar{Z_{i.}})^{2}} \sim F_{k-1,n-k}\)</span></p>
+<p><span class="math inline">\(L = \frac{(N - k)}{(k - 1)} \cdot \frac{\sum_{i=1}^{k} n_i (\bar{Z}_i - \bar{Z})^2}{\sum_{i=1}^{k} \sum_{j=1}^{n_i} (Z_{ij} - \bar{Z}_i)^2}\)</span></p>
 <p>em que</p>
-<p><code>(?)</code></p>
+<p><span class="math inline">\(Z_{ij} = |X_{ij} - \text{Medida Central do Grupo } i|\)</span></p>
 <p>é o desvio absoluto dos <span class="math inline">\(X_{ij}\)</span> em relação à média de cada grupo. Já</p>
-<p><span class="math inline">\(\bar{Z_{i.}}=\sum_{j=1}^{n_{i}}Z_{ij}\)</span></p>
+<p><span class="math inline">\(\bar{Z}_i = \frac{\sum_{j=1}^{n_i} Z_{ij}}{n_i}\)</span></p>
 <p>é a média dos <span class="math inline">\(Z_{i,j}\)</span> no grupo i. E</p>
-<p><code>(?)</code></p>
+<p><span class="math inline">\(\bar{Z} = \frac{\sum_{i=1}^k \sum_{j=1}^{n_i} Z_{ij}}{N}\)</span></p>
 <p>é a média geral dos <span class="math inline">\(Z_{i,j}\)</span></p>
 <p>O p-valor é calculado da forma:</p>
-<p><span class="math inline">\(p-valor= P(F&gt;L_{obs}\mid H_{0})\)</span></p>
+<p><span class="math inline">\(\text{p-valor} = P(F_{(k-1, N-k)} \geq W)\)</span></p>
 <p>Para aplicarmos o teste de Levene, utilizamos a função <code>levene</code> da biblioteca Scipy, cujos argumentos de entrada são:</p>
 <ul>
 <li><code>sample1</code>, <code>sample2</code>, … : amostras observadas.</li>
@@ -367,7 +366,8 @@ window.Quarto = {
 <p>Para aplicação do teste utilizaremos o banco de dados de uma amostra aleatória simples de avaliações de filmes do site Rotten Tomatoes. Vamos supor que os dados são provenientes de distribuições normais.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'Movie-Ratings.csv'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
+<div>
+<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -427,14 +427,13 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
 <section id="exemplo" class="level2">
 <h2 class="anchored" data-anchor-id="exemplo">Exemplo</h2>
 <p>Deseja-se saber se a variabilidade das notas dos críticos do site Rotten Tomatoes são <code>iguais</code> nos filmes dos gêneros <strong>Comédia, Ação, Aventura e Drama</strong>, ao nível de significância de <code>5%</code>.</p>
-<p><code>(?)</code></p>
-<p>vs</p>
-<p><code>(?)</code></p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_acao, df_adventure, df_comedia, df_drama <span class="op">=</span> df[df[<span class="st">"Genre"</span>] <span class="op">==</span> <span class="st">'Action'</span>], df[df[<span class="st">"Genre"</span>] <span class="op">==</span> <span class="st">'Adventure'</span>], df[df[<span class="st">"Genre"</span>] <span class="op">==</span> <span class="st">"Comedy"</span>], df[df[<span class="st">"Genre"</span>]<span class="op">==</span><span class="st">"Drama"</span>]</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ss.levene(df_acao[<span class="st">'Rotten Tomatoes Ratings %'</span>],df_adventure[<span class="st">'Rotten Tomatoes Ratings %'</span>], df_drama[<span class="st">'Rotten Tomatoes Ratings %'</span>], df_comedia[<span class="st">'Rotten Tomatoes Ratings %'</span>], center<span class="op">=</span><span class="st">"mean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><span class="math inline">\(H_0: \sigma_{\text{Comédia}}^2 = \sigma_{\text{Ação}}^2 = \sigma_{\text{Aventura}}^2 = \sigma_{\text{Drama}}^2\)</span></p>
+<p><span class="math inline">\(H_1: \exists \, i, j \ , \text{tais que} \ , \sigma_i^2 \neq \sigma_j^2, \, \text{com } i, j \in \{\text{Comédia, Ação, Aventura, Drama}\}\)</span></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df_acao, df_adventure, df_comedia, df_drama <span class="op">=</span> df[df[<span class="st">"Genre"</span>] <span class="op">==</span> <span class="st">'Action'</span>], df[df[<span class="st">"Genre"</span>] <span class="op">==</span> <span class="st">'Adventure'</span>], df[df[<span class="st">"Genre"</span>] <span class="op">==</span> <span class="st">"Comedy"</span>], df_comedia[<span class="st">'Rotten Tomatoes Ratings %'</span>], center<span class="op">=</span><span class="st">"mean"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
@@ -450,19 +449,17 @@ window.Quarto = {
 </section>
 <section id="teste-one-way-anova" class="level1">
 <h1>Teste One-Way ANOVA</h1>
-<p>A One-Way ANOVA é usada para testar diferenças entre médias de pelo menos três populações, uma vez que a comparação entre dois grupos pode ser obtida através do teste t. Assim como no caso do teste t, o modelo da ANOVA exige que as populações possuam distribuição Normal e, além disso, as variâncias devem ser <strong>iguais</strong>. Considere que são extraídas amostras aleatórias simples de tamanhos <span class="math inline">\(n_{1},n_{2},\ldots,n{k}\)</span> dessas populações. A hipótese de interesse é</p>
-<p><span class="math inline">\(H_{0} : \mu_{1} = \mu_{2} = \ldots = \mu_{k}\)</span></p>
-<p>vs</p>
-<p><span class="math inline">\(H_{1} : \mu_{i} \neq \mu_{j}\)</span> para algum <span class="math inline">\(i\neq j\)</span>.</p>
-<p>com a hipótese alternativa sendo que pelo menos uma das médias é considerada diferente.</p>
+<p>A One-Way ANOVA é usada para testar diferenças entre médias de pelo menos três populações, uma vez que a comparação entre dois grupos pode ser obtida através do teste t. Assim como no caso do teste t, o modelo da ANOVA exige que as populações possuam distribuição Normal e, além disso, as variâncias devem ser <strong>iguais</strong>. Considere que são extraídas amostras aleatórias simples de tamanhos <span class="math inline">\(n_{1},n_{2},\\ldots,n{k}\)</span> dessas populações. A hipótese de interesse é</p>
+<p><span class="math inline">\(H_0: \mu_1 = \mu_2 = \dots = \mu_k\)</span></p>
+<p><span class="math inline">\(H_1: \exists \, i, j \, \text{tais que} \, \mu_i \neq \mu_j, \, \text{com } i, j \in \{1, 2, \dots, k\}\)</span></p>
 <p>A estatística de teste é dada por:</p>
-<p><code>(?)</code></p>
+<p><span class="math inline">\(F = \frac{\text{QM\_entre}}{\text{QM\_dentro}}\)</span></p>
 <p>onde</p>
-<p><code>(?)</code></p>
+<p><span class="math inline">\(\text{QM\_entre} = \frac{\text{SQ\_entre}}{k - 1}\)</span></p>
 <p>e</p>
-<p><code>(?)</code></p>
+<p><span class="math inline">\(\text{QM\_dentro} = \frac{\text{SQ\_dentro}}{N - k}\)</span></p>
 <p>O p-valor é calculado da forma:</p>
-<p><span class="math inline">\(p-valor= P(F&gt;F_{obs}\mid H_{0})\)</span></p>
+<p><span class="math inline">\(\text{p-valor} = P(F_{(k-1, N-k)} \geq F)\)</span></p>
 <p>Para aplicarmos o teste One Way ANOVA utilizamos a função <code>f_oneway</code> da biblioteca <strong>Scipy</strong>, cujos argumentos de entrada são apenas:</p>
 <ul>
 <li><code>sample1</code>, <code>sample2</code>, … : amostras observadas.</li>
@@ -472,9 +469,8 @@ window.Quarto = {
 <section id="exemplo-1" class="level2">
 <h2 class="anchored" data-anchor-id="exemplo-1">Exemplo</h2>
 <p>Deseja-se verificar se as médias dos avaliações do site Rotten Tomatoes são <code>iguais</code> para os filmes de <strong>Ação, Comédia, Drama e Aventura</strong>, utilizando um nível de significância de <code>5%</code>.</p>
-<p><span class="math inline">\(H_{0} : \mu_{Ação} = \mu_{Comédia} = \mu_{Drama} = \mu_{Aventura}\)</span></p>
-<p>vs</p>
-<p><span class="math inline">\(H_{1} : \mu_{i} \neq \mu_{j}\)</span> para algum <span class="math inline">\(i \neq j, \space\space\space    onde \space i,j = {Ação,Aventura,Comédia,Drama}\)</span></p>
+<p><span class="math inline">\(H_0: \mu_{\text{Ação}} = \mu_{\text{Comédia}} = \mu_{\text{Drama}} = \mu_{\text{Aventura}}\)</span></p>
+<p><span class="math inline">\(H_1: \exists \, i, j \, \text{tais que} \, \mu_i \neq \mu_j, \, \text{com } i, j \in \{\text{Ação, Comédia, Drama, Aventura}\}\)</span></p>
 <p>Primeiro passo a ser realizado é verificar se as variâncias são iguais, aplicando o Teste de Levene. Logo, através da aplicação no exemplo anterior, temos que as variâncias são consideradas <strong>iguais</strong>. Agora realizaremos o teste de ANOVA.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ss.f_oneway(df_acao[<span class="st">'Rotten Tomatoes Ratings %'</span>],df_adventure[<span class="st">'Rotten Tomatoes Ratings %'</span>],df_drama[<span class="st">'Rotten Tomatoes Ratings %'</span>], df_comedia[<span class="st">'Rotten Tomatoes Ratings %'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-simple callout-none no-icon">
@@ -550,7 +546,8 @@ window.Quarto = {
 <p><span class="math inline">\(H_{1}\)</span>: os dados não seguem uma distribuição normal</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df_horror <span class="op">=</span> df[df[<span class="st">"Genre"</span>] <span class="op">==</span> <span class="st">'Horror'</span>]</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_horror.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<table class="dataframe table-striped table-bordered table-sm caption-top table small" data-quarto-postprocess="true" data-border="1">
+<div>
+<table class="dataframe table-striped table-bordered table-sm table small" data-quarto-postprocess="true" data-border="1">
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th"></th>
@@ -610,6 +607,7 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ss.kstest(df_horror[<span class="st">'Audience Ratings %'</span>], <span class="st">"norm"</span>, args<span class="op">=</span>[np.mean(df_horror[<span class="st">'Audience Ratings %'</span>]),np.std(df_horror[<span class="st">'Audience Ratings %'</span>])])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="callout callout-style-simple callout-none no-icon">
 <div class="callout-body d-flex">
@@ -637,16 +635,14 @@ window.Quarto = {
 <section id="teste-de-aderência" class="level2">
 <h2 class="anchored" data-anchor-id="teste-de-aderência">Teste de Aderência</h2>
 <p>O teste de Aderência busca avaliar o comportamento, em uma população, de uma variável categórica que pode assumir k valores. Sejam <span class="math inline">\(p_{1}, p_{2}, p_{3},…, p_{k}\)</span>, respectivamente, as proporções populacionais das categorias <span class="math inline">\(1, 2, 3, …, K\)</span>, teremos as seguintes hipóteses:</p>
-<p><span class="math inline">\(H_{0} : p_{1} = p_{1,A} \ , \ p_{2} = p_{2,A} \ , \ p_{3} = p_{3,A} \ … \ p_{k} = p_{k,A}\)</span></p>
-<p>vs</p>
-<p>$H_{1} : p_{i} p_{i,A} &nbsp;, $, para pelo menos um <span class="math inline">\(i \ , \ i = 1, 2, 3, …, k\)</span></p>
-<p>Onde <span class="math inline">\(p_{i,A}; i = 1, 2, · · · , k\)</span> são as proporções da hipótese nula, que devem satisfazer <span class="math inline">\(\sum\limits_{i = 1}^k p_{i,A} = 1\)</span></p>
+<p><span class="math inline">\(H_0: p_1 = p_{1,A}, \, p_2 = p_{2,A}, \, p_3 = p_{3,A}, \dots, p_k = p_{k,A}\)</span></p>
+<p><span class="math inline">\(H_1: \exists \, i \ , \text{tal que} \, p_i \neq p_{i,A}, \, \text{com } i \in \{1, 2, 3, \dots, k\}\)</span></p>
 <p>Sob <span class="math inline">\(H_{0}\)</span>:</p>
-<p><span class="math inline">\(X^2 = \sum_{i = 1}^{k}\frac{(o_{i} - e_{i})^2}{e_{i}} \sim X^2_{k-1}\)</span></p>
+<p><span class="math inline">\(\chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}\)</span></p>
 <p>Onde:</p>
 <ul>
-<li><span class="math inline">\(o_{i}\)</span>: é o número de vezes que a categoria <span class="math inline">\(i\)</span> é observada na amostra</li>
-<li><span class="math inline">\(e_{i}\)</span>: valor esperado; obtido pela multiplicação do tamanho da amostra com <span class="math inline">\(p_{i}\)</span></li>
+<li><span class="math inline">\(O_{i}\)</span>: é o número de vezes que a categoria <span class="math inline">\(i\)</span> é observada na amostra</li>
+<li><span class="math inline">\(E_{i}\)</span>: valor esperado; obtido pela multiplicação do tamanho da amostra com <span class="math inline">\(p_{i}\)</span></li>
 </ul>
 <p>E o p-valor é calculado da seguinte forma:</p>
 <p>Para o teste de Aderência usaremos a função <code>chisquare</code> da biblioteca <strong>Scipy</strong>, cujos argumentos de entrada são</p>
@@ -658,9 +654,9 @@ window.Quarto = {
 <section id="exemplo-3" class="level3">
 <h3 class="anchored" data-anchor-id="exemplo-3">Exemplo</h3>
 <p>Deseja-se verificar se a proporção de filmes de <strong>Aventura</strong>, <strong>Romance</strong> e <strong>Suspense</strong> avaliados são, respectivamente, <code>0.26</code>, <code>0.29</code>, <code>0.45</code>, ao nível de significância de <code>5%</code>.</p>
-<p><span class="math inline">\(H_{0} : p_{1} = 0.26 \ , \ p_{2} = 0.29 \ , \ p_{3} = 0.45\)</span></p>
+<p><span class="math inline">\(H_{0} : p_{1} = 0.26 \\ , \\ p_{2} = 0.29 \\ , \\ p_{3} = 0.45\)</span></p>
 <p>vs</p>
-<p>$H_{1} : p_{i} p_{i,A} &nbsp;, $, para pelo menos um <span class="math inline">\(i \ , \ i = 1, 2, 3\)</span></p>
+<p><span class="math inline">\(H\\_{1} : p\\_{i} \\neq p\\_{i,A} &nbsp;, \\\)</span>, para pelo menos um <span class="math inline">\(i \\ , \\ i = 1, 2, 3\)</span></p>
 <p>Obtendo os valores observados:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tabela_freq <span class="op">=</span> df.Genre.value_counts()</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>tabela_freq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -696,15 +692,14 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="teste-de-homogeneidade">Teste de Homogeneidade</h2>
 <p>Esse caso é similar ao teste de Aderência, com a diferença de que agora será avaliado o comportamento, em C populações <strong>independentes</strong>, de uma variável categórica que pode assumir L valores.</p>
 <p>Para este teste, teremos as seguintes hipóteses:</p>
-<p><span class="math inline">\(H_{0} : p_{1, 1} = p_{1, 2} = … = p_{1, C} \ ; \ p_{2, 1} = p_{2, 2} = … = p_{2, C} \ ; \ \ … \ \ ; \ p_{L, 1} = p_{L, 2} = … = p_{L, C}\)</span></p>
-<p>vs</p>
-<p><span class="math inline">\(H_{1} :\)</span> pelo menos uma das igualdades não é valida</p>
-<p>Para temos que:</p>
-<p><span class="math inline">\(X^2 = \sum_{i = 1}^{L}\sum_{j = 1}^{C}\frac{(o_{ij - e_{ij}})^2}{e_{ij}} \sim X^2_{(L - 1)*(C - 1)}\)</span></p>
+<p><span class="math inline">\(H_{0} : p_{1, 1} = p_{1, 2} = … = p_{1, C} \\ ; \\ p_{2, 1} = p_{2, 2} = … = p_{2, C} \\ ; \\ \\ … \\ \\ ; \\ p_{L, 1} = p_{L, 2} = … = p_{L, C}\)</span></p>
+<p><span class="math inline">\(H_1: \exists \, i, j \ , \text{tais que} \, p_{i,j} \neq p_{i,A}, \, \text{com } i \in \{1, 2, \dots, L\}, \, j \in \{1, 2, \dots, C\}\)</span></p>
+<p>Para <span class="math inline">\(H_0\)</span> temos que:</p>
+<p><span class="math inline">\(\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\)</span></p>
 <p>Onde:</p>
 <ul>
-<li><span class="math inline">\(o_{ij} :\)</span> número de vezes que na amostra da população <span class="math inline">\(i\)</span> a categoria <span class="math inline">\(j\)</span> é observada.</li>
-<li><span class="math inline">\(e_{ij} :\)</span> valor esperado na população e na categoria <span class="math inline">\(j\)</span></li>
+<li><span class="math inline">\(O_{ij} :\)</span> número de vezes que na amostra da população <span class="math inline">\(i\)</span> a categoria <span class="math inline">\(j\)</span> é observada.</li>
+<li><span class="math inline">\(E_{ij} :\)</span> valor esperado na população e na categoria <span class="math inline">\(j\)</span></li>
 </ul>
 <p>E o p-valor é calculado da seguinte forma:</p>
 <p>Para o teste de Homogeneidade usaremos a função <code>chi2_contingency</code> da biblioteca <strong>Scipy</strong>, cujo argumento de entrada é</p>
@@ -778,12 +773,11 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="teste-de-independência">Teste de Independência</h2>
 <p>Agora considere que cada indivíduo da amostra será classificado conforme duas variáveis qualitativas. Em comparação ao teste de Homogeneidade, e simplificando o entendimento, ao invés de L populações, teremos uma população que pode ser classificada de Lformas diferentes.</p>
 <p>Para este teste teremos as seguintes hipóteses:</p>
-<p><span class="math inline">\(H_{0} : p_{i\bigcap j} = p_{i.}*p_{.j}\)</span>, para todo <span class="math inline">\(i = 1, …, L\)</span> e <span class="math inline">\(j = 1, …, C\)</span></p>
-<p>vs</p>
-<p><span class="math inline">\(H_{1} :\)</span> pelo menos uma das igualdades não é valida</p>
-<p>Onde <span class="math inline">\(p_{i\bigcap j}\)</span> é a probabilidade do indivíduo ser classificado como <span class="math inline">\(i\)</span> e <span class="math inline">\(j\)</span> simultaneamente e <span class="math inline">\(p_{i.}\)</span> e <span class="math inline">\(p_{.j}\)</span> as probabilidades dos indivíduos serem classificados como <span class="math inline">\(i\)</span> ou <span class="math inline">\(j\)</span> de forma separada, respectivamente.</p>
-<p>Para e sob temos que:</p>
-<p><span class="math inline">\(X^2 = \sum_{i = 1}^{L}\sum_{j = 1}^{C}\frac{(o_{ij - e_{ij}})^2}{e_{ij}} \sim X^2_{(L - 1)*(C - 1)}\)</span></p>
+<p><span class="math inline">\(H_{0} : p_{i\\bigcap j} = p_{i.}*p_{.j}\)</span>, para todo <span class="math inline">\(i = 1, …, L\)</span> e <span class="math inline">\(j = 1, …, C\)</span></p>
+<p><span class="math inline">\(H_1: \exists \, i, j \ , \text{tais que} \, p_{i,j} \neq p_{i,*} \cdot p_{*,j}, \, \text{com } i \in \{1, \dots, L\}, \, j \in \{1, \dots, C\}\)</span></p>
+<p>Onde <span class="math inline">\(p_{i\\bigcap j}\)</span> é a probabilidade do indivíduo ser classificado como <span class="math inline">\(i\)</span> e <span class="math inline">\(j\)</span> simultaneamente e <span class="math inline">\(p_{i.}\)</span> e <span class="math inline">\(p_{.j}\)</span> as probabilidades dos indivíduos serem classificados como <span class="math inline">\(i\)</span> ou <span class="math inline">\(j\)</span> de forma separada, respectivamente.</p>
+<p>sob <span class="math inline">\(H_0\)</span> temos que:</p>
+<p><span class="math inline">\(\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}\)</span></p>
 <p>E o p-valor é calculado da seguinte forma:</p>
 <p>Todo desenvolvimento do cálculo será igual ao teste de Homogeneidade, mas a interpretação do problema será diferente, assim como as hipóteses.</p>
 <section id="exemplo-5" class="level3">
@@ -1046,7 +1040,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const onCopySuccess = function(e) {
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1078,29 +1083,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
   });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1108,7 +1091,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
@@ -1444,11 +1427,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>Criação: Maqueise Pinheiro e Thaís Machado. <br> Orientação: Douglas Rodrigues (UFF) e Karina Yaginuma (UFF). <br> Colaboradores: Gabriel Miranda e Thiago Augusto.</p>
+<p>Orientação: Douglas Rodrigues (UFF) e Karina Yaginuma (UFF). <br> Equipe atual: Gabriel Caetano, Guilherme Ceacero, Claudionor Ferreira e Fenício Porto.</p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
-    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/CienciaDeDadosUFF/cienciadedadosuff.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/CienciaDeDadosUFF/python.github.io/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

@@ -33,33 +33,31 @@ from scipy.stats import chi2_contingency
 
 Teste de Levene é usado para testar se k amostras foram coletadas de populações que possuem mesma variância. As hipóteses do teste são:
 
-`(?)`
+$H_0: \sigma_1^2 = \sigma_2^2 = \dots = \sigma_k^2$
 
-vs
-
-`(?)`
+$H_1: \exists \, i, j \ , \text{tal que} \, \sigma_i^2 \neq \sigma_j^2$
 
 Ou seja, igualdade entre as variâncias populacionais contra a alternativa de que nem todas as variâncias são iguais. Ele é o teste mais robusto contra falta de normalidade dos dados e sua estatística de teste segue com uma distribuição F sob $H_{0}$:
 
-$L = \frac{(n-k)\sum_{i=1}^{k}n_{i}(\bar{Z_{i.}}-\bar{Z_{..}})^{2}}{(k-1)\sum_{i=1}^{k}\sum_{j=1}^{n_{i}}(Z_{ij}-\bar{Z_{i.}})^{2}} \sim F_{k-1,n-k}$
+$L = \frac{(N - k)}{(k - 1)} \cdot \frac{\sum_{i=1}^{k} n_i (\bar{Z}_i - \bar{Z})^2}{\sum_{i=1}^{k} \sum_{j=1}^{n_i} (Z_{ij} - \bar{Z}_i)^2}$
 
 em que
 
-`(?)`
+$Z_{ij} = |X_{ij} - \text{Medida Central do Grupo } i|$
 
 é o desvio absoluto dos $X_{ij}$ em relação à média de cada grupo. Já
 
-$\bar{Z_{i.}}=\sum_{j=1}^{n_{i}}Z_{ij}$
+$\bar{Z}_i = \frac{\sum_{j=1}^{n_i} Z_{ij}}{n_i}$
 
 é a média dos $Z_{i,j}$ no grupo i. E
 
-`(?)`
+$\bar{Z} = \frac{\sum_{i=1}^k \sum_{j=1}^{n_i} Z_{ij}}{N}$
 
 é a média geral dos $Z_{i,j}$
 
 O p-valor é calculado da forma:
 
-$p-valor= P(F>L_{obs}\mid H_{0})$
+$\text{p-valor} = P(F_{(k-1, N-k)} \geq W)$
 
 Para aplicarmos o teste de Levene, utilizamos a função `levene` da biblioteca Scipy, cujos argumentos de entrada são:
 
@@ -143,15 +141,12 @@ df.head()
 
 Deseja-se saber se a variabilidade das notas dos críticos do site Rotten Tomatoes são `iguais` nos filmes dos gêneros **Comédia, Ação, Aventura e Drama**, ao nível de significância de `5%`.
 
-`(?)`
+$H_0: \sigma_{\text{Comédia}}^2 = \sigma_{\text{Ação}}^2 = \sigma_{\text{Aventura}}^2 = \sigma_{\text{Drama}}^2$
 
-vs
-
-`(?)`
+$H_1: \exists \, i, j \ , \text{tais que} \ , \sigma_i^2 \neq \sigma_j^2, \, \text{com } i, j \in \{\text{Comédia, Ação, Aventura, Drama}\}$
 
 ``` python
-df_acao, df_adventure, df_comedia, df_drama = df[df["Genre"] == 'Action'], df[df["Genre"] == 'Adventure'], df[df["Genre"] == "Comedy"], df[df["Genre"]=="Drama"]
-ss.levene(df_acao['Rotten Tomatoes Ratings %'],df_adventure['Rotten Tomatoes Ratings %'], df_drama['Rotten Tomatoes Ratings %'], df_comedia['Rotten Tomatoes Ratings %'], center="mean")
+df_acao, df_adventure, df_comedia, df_drama = df[df["Genre"] == 'Action'], df[df["Genre"] == 'Adventure'], df[df["Genre"] == "Comedy"], df_comedia['Rotten Tomatoes Ratings %'], center="mean")
 ```
 
 ::: callout
@@ -162,31 +157,27 @@ Como p-valor=0.16 é maior que o nível de significância proposto, não rejeita
 
 # Teste One-Way ANOVA
 
-A One-Way ANOVA é usada para testar diferenças entre médias de pelo menos três populações, uma vez que a comparação entre dois grupos pode ser obtida através do teste t. Assim como no caso do teste t, o modelo da ANOVA exige que as populações possuam distribuição Normal e, além disso, as variâncias devem ser **iguais**. Considere que são extraídas amostras aleatórias simples de tamanhos $n_{1},n_{2},\ldots,n{k}$ dessas populações. A hipótese de interesse é
+A One-Way ANOVA é usada para testar diferenças entre médias de pelo menos três populações, uma vez que a comparação entre dois grupos pode ser obtida através do teste t. Assim como no caso do teste t, o modelo da ANOVA exige que as populações possuam distribuição Normal e, além disso, as variâncias devem ser **iguais**. Considere que são extraídas amostras aleatórias simples de tamanhos $n_{1},n_{2},\\ldots,n{k}$ dessas populações. A hipótese de interesse é
 
-$H_{0} : \mu_{1} = \mu_{2} = \ldots = \mu_{k}$
+$H_0: \mu_1 = \mu_2 = \dots = \mu_k$
 
-vs
-
-$H_{1} : \mu_{i} \neq \mu_{j}$ para algum $i\neq j$.
-
-com a hipótese alternativa sendo que pelo menos uma das médias é considerada diferente.
+$H_1: \exists \, i, j \, \text{tais que} \, \mu_i \neq \mu_j, \, \text{com } i, j \in \{1, 2, \dots, k\}$
 
 A estatística de teste é dada por:
 
-`(?)`
+$F = \frac{\text{QM\_entre}}{\text{QM\_dentro}}$
 
 onde
 
-`(?)`
+$\text{QM\_entre} = \frac{\text{SQ\_entre}}{k - 1}$
 
 e
 
-`(?)`
+$\text{QM\_dentro} = \frac{\text{SQ\_dentro}}{N - k}$
 
 O p-valor é calculado da forma:
 
-$p-valor= P(F>F_{obs}\mid H_{0})$
+$\text{p-valor} = P(F_{(k-1, N-k)} \geq F)$
 
 Para aplicarmos o teste One Way ANOVA utilizamos a função `f_oneway` da biblioteca **Scipy**, cujos argumentos de entrada são apenas:
 
@@ -200,11 +191,9 @@ Vamos exemplificar a utilização do teste com o banco de dados de avaliações 
 
 Deseja-se verificar se as médias dos avaliações do site Rotten Tomatoes são `iguais` para os filmes de **Ação, Comédia, Drama e Aventura**, utilizando um nível de significância de `5%`.
 
-$H_{0} : \mu_{Ação} = \mu_{Comédia} = \mu_{Drama} = \mu_{Aventura}$
+$H_0: \mu_{\text{Ação}} = \mu_{\text{Comédia}} = \mu_{\text{Drama}} = \mu_{\text{Aventura}}$
 
-vs
-
-$H_{1} : \mu_{i} \neq \mu_{j}$ para algum $i \neq j, \space\space\space    onde \space i,j = {Ação,Aventura,Comédia,Drama}$
+$H_1: \exists \, i, j \, \text{tais que} \, \mu_i \neq \mu_j, \, \text{com } i, j \in \{\text{Ação, Comédia, Drama, Aventura}\}$
 
 Primeiro passo a ser realizado é verificar se as variâncias são iguais, aplicando o Teste de Levene. Logo, através da aplicação no exemplo anterior, temos que as variâncias são consideradas **iguais**. Agora realizaremos o teste de ANOVA.
 
@@ -388,22 +377,18 @@ Como p-valor=0.004 é menor que o nível de significância proposto, rejeitamos 
 
 O teste de Aderência busca avaliar o comportamento, em uma população, de uma variável categórica que pode assumir k valores. Sejam $p_{1}, p_{2}, p_{3},…, p_{k}$, respectivamente, as proporções populacionais das categorias $1, 2, 3, …, K$, teremos as seguintes hipóteses:
 
-$H_{0} : p_{1} = p_{1,A} \ , \ p_{2} = p_{2,A} \ , \ p_{3} = p_{3,A} \ … \ p_{k} = p_{k,A}$
+$H_0: p_1 = p_{1,A}, \, p_2 = p_{2,A}, \, p_3 = p_{3,A}, \dots, p_k = p_{k,A}$
 
-vs
-
-\$H\_{1} : p\_{i} \neq p\_{i,A}  , \$, para pelo menos um $i \ , \ i = 1, 2, 3, …, k$
-
-Onde $p_{i,A}; i = 1, 2, · · · , k$ são as proporções da hipótese nula, que devem satisfazer $\sum\limits_{i = 1}^k p_{i,A} = 1$
+$H_1: \exists \, i \ , \text{tal que} \, p_i \neq p_{i,A}, \, \text{com } i \in \{1, 2, 3, \dots, k\}$
 
 Sob $H_{0}$:
 
-$X^2 = \sum_{i = 1}^{k}\frac{(o_{i} - e_{i})^2}{e_{i}} \sim X^2_{k-1}$
+$\chi^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$
 
 Onde:
 
--   $o_{i}$: é o número de vezes que a categoria $i$ é observada na amostra
--   $e_{i}$: valor esperado; obtido pela multiplicação do tamanho da amostra com $p_{i}$
+-   $O_{i}$: é o número de vezes que a categoria $i$ é observada na amostra
+-   $E_{i}$: valor esperado; obtido pela multiplicação do tamanho da amostra com $p_{i}$
 
 E o p-valor é calculado da seguinte forma:
 
@@ -418,11 +403,11 @@ Para mais informações sobre a função clique aqui para acessar sua documenta�
 
 Deseja-se verificar se a proporção de filmes de **Aventura**, **Romance** e **Suspense** avaliados são, respectivamente, `0.26`, `0.29`, `0.45`, ao nível de significância de `5%`.
 
-$H_{0} : p_{1} = 0.26 \ , \ p_{2} = 0.29 \ , \ p_{3} = 0.45$
+$H_{0} : p_{1} = 0.26 \\ , \\ p_{2} = 0.29 \\ , \\ p_{3} = 0.45$
 
 vs
 
-\$H\_{1} : p\_{i} \neq p\_{i,A}  , \$, para pelo menos um $i \ , \ i = 1, 2, 3$
+$H\\_{1} : p\\_{i} \\neq p\\_{i,A}  , \\$, para pelo menos um $i \\ , \\ i = 1, 2, 3$
 
 Obtendo os valores observados:
 
@@ -456,20 +441,18 @@ Esse caso é similar ao teste de Aderência, com a diferença de que agora será
 
 Para este teste, teremos as seguintes hipóteses:
 
-$H_{0} : p_{1, 1} = p_{1, 2} = … = p_{1, C} \ ; \ p_{2, 1} = p_{2, 2} = … = p_{2, C} \ ; \ \ … \ \ ; \ p_{L, 1} = p_{L, 2} = … = p_{L, C}$
+$H_{0} : p_{1, 1} = p_{1, 2} = … = p_{1, C} \\ ; \\ p_{2, 1} = p_{2, 2} = … = p_{2, C} \\ ; \\ \\ … \\ \\ ; \\ p_{L, 1} = p_{L, 2} = … = p_{L, C}$
 
-vs
+$H_1: \exists \, i, j \ , \text{tais que} \, p_{i,j} \neq p_{i,A}, \, \text{com } i \in \{1, 2, \dots, L\}, \, j \in \{1, 2, \dots, C\}$
 
-$H_{1} :$ pelo menos uma das igualdades não é valida
+Para $H_0$ temos que:
 
-Para temos que:
-
-$X^2 = \sum_{i = 1}^{L}\sum_{j = 1}^{C}\frac{(o_{ij - e_{ij}})^2}{e_{ij}} \sim X^2_{(L - 1)*(C - 1)}$
+$\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$
 
 Onde:
 
--   $o_{ij} :$ número de vezes que na amostra da população $i$ a categoria $j$ é observada.
--   $e_{ij} :$ valor esperado na população e na categoria $j$
+-   $O_{ij} :$ número de vezes que na amostra da população $i$ a categoria $j$ é observada.
+-   $E_{ij} :$ valor esperado na população e na categoria $j$
 
 E o p-valor é calculado da seguinte forma:
 
@@ -542,17 +525,15 @@ Agora considere que cada indivíduo da amostra será classificado conforme duas 
 
 Para este teste teremos as seguintes hipóteses:
 
-$H_{0} : p_{i\bigcap j} = p_{i.}*p_{.j}$, para todo $i = 1, …, L$ e $j = 1, …, C$
+$H_{0} : p_{i\\bigcap j} = p_{i.}*p_{.j}$, para todo $i = 1, …, L$ e $j = 1, …, C$
 
-vs
+$H_1: \exists \, i, j \ , \text{tais que} \, p_{i,j} \neq p_{i,*} \cdot p_{*,j}, \, \text{com } i \in \{1, \dots, L\}, \, j \in \{1, \dots, C\}$
 
-$H_{1} :$ pelo menos uma das igualdades não é valida
+Onde $p_{i\\bigcap j}$ é a probabilidade do indivíduo ser classificado como $i$ e $j$ simultaneamente e $p_{i.}$ e $p_{.j}$ as probabilidades dos indivíduos serem classificados como $i$ ou $j$ de forma separada, respectivamente.
 
-Onde $p_{i\bigcap j}$ é a probabilidade do indivíduo ser classificado como $i$ e $j$ simultaneamente e $p_{i.}$ e $p_{.j}$ as probabilidades dos indivíduos serem classificados como $i$ ou $j$ de forma separada, respectivamente.
+sob $H_0$ temos que:
 
-Para e sob temos que:
-
-$X^2 = \sum_{i = 1}^{L}\sum_{j = 1}^{C}\frac{(o_{ij - e_{ij}})^2}{e_{ij}} \sim X^2_{(L - 1)*(C - 1)}$
+$\chi^2 = \sum_{i=1}^r \sum_{j=1}^c \frac{(O_{ij} - E_{ij})^2}{E_{ij}}$
 
 E o p-valor é calculado da seguinte forma:
 
