@@ -213,8 +213,6 @@ Utiliza-se o teste de Shapiro-Wilk para verificar se uma amostra é proveniente 
 
 $H_{0}$ : Os dados são provenientes de uma distribuição Normal
 
-vs
-
 $H_{1}$ : os dados não são provenientes de uma distribuição Normal.
 
 Para realizar o teste de Shapiro-Wilk utilizamos a função `shapiro` da biblioteca Scipy, cujo único argumento de entrada é:
@@ -243,15 +241,11 @@ O teste Kolmogorov–Smirnov é um teste não paramétrico sobre a igualdade de 
 
 $H_{0}$ : os dados seguem uma certa distribuição
 
-vs
-
 $H_{1}$ : os dados não seguem uma certa distribuição
 
 Ou
 
 $H_{0}$ : as duas amostras seguem a mesma distribuição
-
-vs
 
 $H_{1}$ : as duas amostram não seguem a mesma distribuição
 
@@ -277,8 +271,6 @@ Agora vamos aplicá-las em alguns exemplos.
 Deseja-se verificar se as avaliações da audiência constada no site Rotten Tomatoes para os filmes de Terror são provenientes de uma distribuição normal, utilizando um nível de significância de 5%.
 
 $H_{0}$: os dados seguem uma distribuição normal
-
-vs
 
 $H_{1}$: os dados não seguem uma distribuição normal
 
@@ -365,8 +357,6 @@ Deseja-se verificar se as avaliações da audiência constadas no site Rotten To
 
 $H_{0}$: os dados seguem a mesma distribuição.
 
-vs
-
 $H_{1}$: os dados não seguem a mesma distribuição.
 
 Como p-valor=0.004 é menor que o nível de significância proposto, rejeitamos a hipótese nula, ou seja, as avaliações da audiência para os filmes de Terror e Ação não seguem a mesma distribuição.
@@ -404,8 +394,6 @@ Para mais informações sobre a função clique aqui para acessar sua documenta�
 Deseja-se verificar se a proporção de filmes de **Aventura**, **Romance** e **Suspense** avaliados são, respectivamente, `0.26`, `0.29`, `0.45`, ao nível de significância de `5%`.
 
 $H_{0} : p_{1} = 0.26 \\ , \\ p_{2} = 0.29 \\ , \\ p_{3} = 0.45$
-
-vs
 
 $H\\_{1} : p\\_{i} \neq p\\_{i,A}  , \\$, para pelo menos um $i \\ , \\ i = 1, 2, 3$
 
