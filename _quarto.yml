@@ -21,7 +21,6 @@ book:
   
   chapters:
     - index.qmd
-    - "caderno1.qmd"
     - "caderno2.qmd"
     - "ConceitosGeraisDeEstatistica.qmd"
     - "VisualizacaoDeDados.qmd"
